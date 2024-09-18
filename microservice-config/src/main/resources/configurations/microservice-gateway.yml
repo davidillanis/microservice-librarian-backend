@@ -1,0 +1,38 @@
+#spring.application.name=microservice-gateway
+
+server:
+  port: 8081
+
+application.name: microservice-gateway
+application.version: 1.0
+application.link: http://localhost:8081/
+
+
+spring:
+  application:
+    name: microservice-gateway
+
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      mvc:
+        routes:
+          - id: microservice-utils
+            uri: http://localhost:8082/ #${MICROSERVICE_UTILS}
+            predicates:
+              - Path=/utils/api/**
+
+          - id: microservice-test2
+            uri: lb://microservice-test2
+            predicates:
+              - Path=/test2/api/**
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka #${EUREKA_SERVER}
+    #register-with-eureka: false
+    #fetch-registry: false

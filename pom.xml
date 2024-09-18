@@ -16,6 +16,7 @@
         <module>microservice-eureka</module>
         <module>microservice-gateway</module>
         <module>microservice-utils</module>
+        <module>microservice-config</module>
     </modules>
 
     <name>microservice-librarian-backend</name>

@@ -1,0 +1,18 @@
+#spring.application.name=microservice-config
+application.name: microservice-config
+application.version: 1.0
+application.link: http://localhost:8888/
+
+server:
+  port: 8888
+
+spring:
+  application:
+    name: microservice-config
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: classpath:/configurations

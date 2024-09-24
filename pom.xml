@@ -18,6 +18,8 @@
         <module>microservice-utils</module>
         <module>microservice-config</module>
         <module>microservice-users</module>
+        <module>microservice-librarian</module>
+        <module>microservice-issue</module>
     </modules>
 
     <name>microservice-librarian-backend</name>

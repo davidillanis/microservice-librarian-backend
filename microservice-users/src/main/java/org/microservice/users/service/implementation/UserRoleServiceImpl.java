@@ -81,13 +81,8 @@ public class UserRoleServiceImpl implements UserRoleService {
                         .apelPaternoUsua(obj.usuaApelPaterno())
                         .apelMaternoUsua(obj.usuaApelMaterno())
                         //.roles(obj.roleList().stream().map(role->roleRepository.findRoleEntityByRole(role).orElse(null)).collect(Collectors.toSet()))
-                        .roles(obj.roleList().stream().map(role-> {
-                            RoleEntity roleEntity=roleRepository.findRoleEntityByRole(role).orElse(null);
-                            if(roleEntity==null){
-                                return new RoleEntity(0, role);
-                            }
-                            return roleEntity;
-                        }).collect(Collectors.toSet()))
+                        .roles(obj.roleList().stream().map(role-> roleRepository.findRoleEntityByRole(role)
+                                .orElse(new RoleEntity(0, role))).collect(Collectors.toSet()))
                         .build());
 
         UserEntity userEntity=userRepository.findUserEntityByUsername(obj.username()).orElse(null);
@@ -130,8 +125,10 @@ public class UserRoleServiceImpl implements UserRoleService {
 
     @Override
     public Boolean deleteEntity(Integer id) {
-        if(userRepository.existsById(id)){
-            userRepository.deleteById(id);
+        UserEntity userEntity=userRepository.findById(id).orElse(null);
+        if(userEntity!=null){
+            userEntity.setRoles(null);
+            userRepository.delete(userEntity);
             return true;
         }
         return false;

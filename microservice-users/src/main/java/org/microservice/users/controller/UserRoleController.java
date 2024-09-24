@@ -7,6 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/user-role")
 public class UserRoleController {
@@ -36,7 +39,16 @@ public class UserRoleController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createUser(@RequestBody AuthCreateUserRequestDTO authUser){
-        return new ResponseEntity<>(userRoleService.createEntity(authUser), HttpStatus.OK);
+        Map<String, Object> map=new HashMap<>();
+        try {
+            userRoleService.createEntity(authUser);
+            map.put("status", true);
+            map.put("value", "OK");
+        }catch (Exception e){
+            map.put("status", false);
+            map.put("value", "This Username or dni already exist");
+        }
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
     @PutMapping("/update")

@@ -1,0 +1,8 @@
+#spring.application.name=microservice-librarian
+
+spring:
+  application:
+    name: microservice-librarian
+  config:
+    import: optional:configserver:http://localhost:8888
+

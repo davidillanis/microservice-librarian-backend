@@ -17,7 +17,7 @@ public class RoleEntity {
     private Integer id;
 
     //@Column(nullable = false, unique = true, length = 50)
-    @Column(columnDefinition = "CHAR(25)", nullable = false)
+    @Column(columnDefinition = "CHAR(25)", nullable = false, unique = true)
     @Enumerated(EnumType.STRING)
     private ERole role;
 }

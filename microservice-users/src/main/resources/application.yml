@@ -1,0 +1,6 @@
+#spring.application.name=microservice-users
+spring:
+  application:
+    name: microservice-users
+  config:
+    import: optional:configserver:http://localhost:8888

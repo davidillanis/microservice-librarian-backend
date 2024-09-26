@@ -1,15 +1,15 @@
-application.name: microservice-users
+application.name: microservice-issue
 application.version: 1.0
-application.link: http://localhost:8083/
+application.link: http://localhost:8085/
 
 server:
-  port: 8083
+  port: 8085
   servlet:
-    context-path: /users/api/v1
+    context-path: /issue/api/v1
 
 spring:
   application:
-    name: microservice-users
+    name: microservice-issue
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/microservice #${DB_URL}

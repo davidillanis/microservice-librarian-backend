@@ -2,7 +2,7 @@ package org.microservice.librarian.service;
 
 import org.microservice.librarian.model.entity.BookEntity;
 import org.microservice.librarian.model.entity.CopyBookEntity;
-import util.http.request.BookIssueRequest;
+import org.microservice.librarian.util.http.request.BookIssueRequest;
 
 import java.util.List;
 import java.util.Optional;

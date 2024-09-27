@@ -1,12 +1,11 @@
 package org.microservice.librarian.client;
 
-
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import util.dto.BookIssueDTO;
+import org.microservice.librarian.util.dto.BookIssueDTO;
 
-@FeignClient(name = "microservice-issue", url = "localhost:8082/api/book-issue")
+@FeignClient(name = "microservice-issue", url = "http://localhost:8085/issue/api/v1/api/book-issue")
 public interface BookIssueClient {
 
     @PostMapping("/create")

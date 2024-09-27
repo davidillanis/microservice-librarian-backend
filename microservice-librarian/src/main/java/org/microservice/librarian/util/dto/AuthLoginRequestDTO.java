@@ -1,4 +1,4 @@
-package util.dto;
+package org.microservice.librarian.util.dto;
 
 import jakarta.validation.constraints.NotBlank;
 

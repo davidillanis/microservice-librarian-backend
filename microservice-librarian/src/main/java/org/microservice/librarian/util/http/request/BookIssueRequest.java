@@ -1,4 +1,4 @@
-package util.http.request;
+package org.microservice.librarian.util.http.request;
 
 import lombok.*;
 

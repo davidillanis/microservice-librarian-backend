@@ -7,12 +7,11 @@ import org.microservice.librarian.model.repository.BookRepository;
 import org.microservice.librarian.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import util.dto.BookIssueDTO;
-import util.http.request.BookIssueRequest;
+import org.microservice.librarian.util.dto.BookIssueDTO;
+import org.microservice.librarian.util.http.request.BookIssueRequest;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -112,8 +111,8 @@ public class BookServiceImpl implements BookService {
         }
         return null;
     }
-    /*
-    @Override
+
+    /*@Override
     public CopyBookEntity searchCopyBookAvailable(String isbn) {
         CopyBookEntity copyBookEntity=null;
         //return copyBookRepository.findAll().stream().filter(copyBook -> !copyBook.isEstaPresEjem()).findFirst().orElse(null);
@@ -122,6 +121,6 @@ public class BookServiceImpl implements BookService {
     @GetMapping("/search-copy-available/{isbn}")
     public ResponseEntity<CopyBookEntity> searchCopyBookAvailable(@PathVariable String isbn){
         return null;
-    }
-    * */
+    }*/
+
 }

@@ -70,29 +70,33 @@ public class UserRoleServiceImpl implements UserRoleService {
     @Override
     public Boolean createEntity(AuthCreateUserRequestDTO obj) {
         //AuthResponseDTO authResponseDTO=userDetailService.createUser(obj);
-        userRepository.save(UserEntity.builder()
-                        .idUsua(0)
-                        .username(obj.username())
-                        .password(obj.password())
-                        .isEnabled(true)
-                        .teleUsua(obj.usuaTele())
-                        .DNIUsua(obj.usuaDNI())
-                        .nombUsua(obj.usuaNomb())
-                        .apelPaternoUsua(obj.usuaApelPaterno())
-                        .apelMaternoUsua(obj.usuaApelMaterno())
-                        //.roles(obj.roleList().stream().map(role->roleRepository.findRoleEntityByRole(role).orElse(null)).collect(Collectors.toSet()))
-                        .roles(obj.roleList().stream().map(role-> roleRepository.findRoleEntityByRole(role)
-                                .orElse(new RoleEntity(0, role))).collect(Collectors.toSet()))
-                        .build());
+        try {
+            userRepository.save(UserEntity.builder()
+                    .idUsua(0)
+                    .username(obj.username())
+                    .password(obj.password())
+                    .isEnabled(true)
+                    .teleUsua(obj.usuaTele())
+                    .DNIUsua(obj.usuaDNI())
+                    .nombUsua(obj.usuaNomb())
+                    .apelPaternoUsua(obj.usuaApelPaterno())
+                    .apelMaternoUsua(obj.usuaApelMaterno())
+                    //.roles(obj.roleList().stream().map(role->roleRepository.findRoleEntityByRole(role).orElse(null)).collect(Collectors.toSet()))
+                    .roles(obj.roleList().stream().map(role-> roleRepository.findRoleEntityByRole(role)
+                            .orElse(new RoleEntity(0, role))).collect(Collectors.toSet()))
+                    .build());
 
-        UserEntity userEntity=userRepository.findUserEntityByUsername(obj.username()).orElse(null);
-        userEntity.getRoles().stream().forEach(roleEntity-> {
-            switch (roleEntity.getRole()){
-                case LIBRARIAN -> librarianRepository.save(new LibrarianEntity(0, LocalDate.now(), userEntity));
-                case STUDENT -> studentRepository.save(new StudentEntity(0, LocalDate.now(), userEntity));
-            }
-        });
-        return null;
+            UserEntity userEntity=userRepository.findUserEntityByUsername(obj.username()).orElse(null);
+            userEntity.getRoles().stream().forEach(roleEntity-> {
+                switch (roleEntity.getRole()){
+                    case LIBRARIAN -> librarianRepository.save(new LibrarianEntity(0, LocalDate.now(), userEntity));
+                    case STUDENT -> studentRepository.save(new StudentEntity(0, LocalDate.now(), userEntity));
+                }
+            });
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override

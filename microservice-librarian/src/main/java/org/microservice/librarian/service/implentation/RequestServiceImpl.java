@@ -1,5 +1,6 @@
 package org.microservice.librarian.service.implentation;
 
+import org.microservice.librarian.client.UserRoleClient;
 import org.microservice.librarian.model.entity.RequestEntity;
 import org.microservice.librarian.model.repository.RequestRepository;
 import org.microservice.librarian.service.RequestService;
@@ -12,14 +13,18 @@ import java.util.List;
 public class RequestServiceImpl implements RequestService {
     @Autowired
     private RequestRepository requestRepository;
+    @Autowired
+    private UserRoleClient userRoleClient;
 
     @Override
     public boolean createEntity(RequestEntity obj) {
-        if(obj!=null){
+        try {
+            userRoleClient.getUserRoleByUsername(obj.getStudentEntity());
             requestRepository.save(obj);
             return true;
+        }catch (Exception e){
+            return false;
         }
-        return false;
     }
 
     @Override
@@ -35,14 +40,16 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public boolean updateEntity(RequestEntity obj) {
         RequestEntity requestEntity = requestRepository.findById(obj.getIdSoli()).orElse(null);
-        if(requestEntity!=null){
+        try {
+            userRoleClient.getUserRoleByUsername(obj.getStudentEntity());
             requestEntity.setEstaSoli(obj.getEstaSoli());
             requestEntity.setFechSoli(obj.getFechSoli());
-            //requestEntity.setStudentEntity(obj.getStudentEntity())
+            requestEntity.setStudentEntity(obj.getStudentEntity());
             requestEntity.setCopyBookEntity(obj.getCopyBookEntity());
             return true;
+        }catch (Exception e){
+            return false;
         }
-        return false;
     }
 
     @Override

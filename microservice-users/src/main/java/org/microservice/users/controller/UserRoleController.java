@@ -1,5 +1,8 @@
 package org.microservice.users.controller;
 
+import org.microservice.users.model.entity.LibrarianEntity;
+import org.microservice.users.model.entity.StudentEntity;
+import org.microservice.users.model.entity.UserEntity;
 import org.microservice.users.service.UserRoleService;
 import org.microservice.users.utils.dto.AuthCreateUserRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,28 +20,28 @@ public class UserRoleController {
     private UserRoleService userRoleService;
 
     @GetMapping("/byId/{id}")
-    public ResponseEntity<?> getUserRoleById(@PathVariable Integer id) {
+    public ResponseEntity<UserEntity> getUserRoleById(@PathVariable Integer id) {
         return ResponseEntity.ok(userRoleService.getUserEntityById(id));
     }
 
     @GetMapping("/byUsername/{username}")
-    public ResponseEntity<?> getUserRoleByUsername(@PathVariable String username) {
+    public ResponseEntity<UserEntity> getUserRoleByUsername(@PathVariable String username) {
         return ResponseEntity.ok(userRoleService.getUserEntityByUsername(username));
     }
 
     @GetMapping("/student/byId/{id}")
-    public ResponseEntity<?> getStudent(@PathVariable Integer id) {
+    public ResponseEntity<StudentEntity> getStudent(@PathVariable Integer id) {
         System.out.println(userRoleService.getStudentById(id).toString().concat(id.toString()));
         return ResponseEntity.ok(userRoleService.getStudentById(id));
     }
 
     @GetMapping("/librarian/byId/{id}")
-    public ResponseEntity<?> getLibrarian(@PathVariable Integer id) {
+    public ResponseEntity<LibrarianEntity> getLibrarian(@PathVariable Integer id) {
         return ResponseEntity.ok(userRoleService.getLibrarianById(id));
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createUser(@RequestBody AuthCreateUserRequestDTO authUser){
+    public ResponseEntity<Map<String, Object>> createUser(@RequestBody AuthCreateUserRequestDTO authUser){
         Map<String, Object> map=new HashMap<>();
         try {
             userRoleService.createEntity(authUser);
@@ -52,17 +55,17 @@ public class UserRoleController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> updateUser(@RequestBody AuthCreateUserRequestDTO authUser){
+    public ResponseEntity<Boolean> updateUser(@RequestBody AuthCreateUserRequestDTO authUser){
         return new ResponseEntity<>(userRoleService.updateEntity(authUser), HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/status/{id}/{enabled}")
-    public ResponseEntity<?> updateStatus(@PathVariable Integer id, @PathVariable Boolean enabled){
+    public ResponseEntity<Boolean> updateStatus(@PathVariable Integer id, @PathVariable Boolean enabled){
         return new ResponseEntity<>(userRoleService.updateEnabledAccount(id,enabled), HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/delete/byId/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable Integer id){
+    public ResponseEntity<Boolean> deleteUser(@PathVariable Integer id){
         return new ResponseEntity<>(userRoleService.deleteEntity(id), HttpStatus.OK);
     }
 }

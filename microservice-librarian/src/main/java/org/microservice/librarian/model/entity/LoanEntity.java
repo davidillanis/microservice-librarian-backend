@@ -28,6 +28,12 @@ public class LoanEntity {
     @Column(nullable = false)
     private int estaPres;
 
+    @Column(nullable = false)
+    private Integer librarianEntity;
+
+    @Column(nullable = false)
+    private Integer studentEntity;
+
     @ManyToOne
     @JoinColumn(name = "codiEjem", nullable = false)
     private CopyBookEntity copyBookEntity;

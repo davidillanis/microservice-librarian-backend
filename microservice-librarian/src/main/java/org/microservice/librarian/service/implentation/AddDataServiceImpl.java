@@ -78,31 +78,31 @@ public class AddDataServiceImpl {
     private void addRequest(){
         List<RequestEntity> requestEntities = List.of(
                 RequestEntity.builder().idSoli(0).EstaSoli("Pendiente").fechSoli(LocalDate.now())
-                        .copyBookEntity(copyBookService.getEntity("C001")).build(),
+                        .copyBookEntity(copyBookService.getEntity("C001")).studentEntity(1).build(),
                 RequestEntity.builder().idSoli(0).EstaSoli("Pendiente").fechSoli(LocalDate.now())
-                        .copyBookEntity(copyBookService.getEntity("C002")).build(),
+                        .copyBookEntity(copyBookService.getEntity("C002")).studentEntity(1).build(),
                 RequestEntity.builder().idSoli(0).EstaSoli("Pendiente").fechSoli(LocalDate.now())
-                        .copyBookEntity(copyBookService.getEntity("C003")).build(),
+                        .copyBookEntity(copyBookService.getEntity("C003")).studentEntity(1).build(),
 
                 RequestEntity.builder().idSoli(0).EstaSoli("Pendiente").fechSoli(LocalDate.now())
-                        .copyBookEntity(copyBookService.getEntity("C004")).build(),
+                        .copyBookEntity(copyBookService.getEntity("C004")).studentEntity(2).build(),
                 RequestEntity.builder().idSoli(0).EstaSoli("Pendiente").fechSoli(LocalDate.now())
-                        .copyBookEntity(copyBookService.getEntity("C001")).build(),
+                        .copyBookEntity(copyBookService.getEntity("C001")).studentEntity(2).build(),
                 RequestEntity.builder().idSoli(0).EstaSoli("Pendiente").fechSoli(LocalDate.now())
-                        .copyBookEntity(copyBookService.getEntity("C005")).build(),
+                        .copyBookEntity(copyBookService.getEntity("C005")).studentEntity(2).build(),
 
                 RequestEntity.builder().idSoli(0).EstaSoli("Pendiente").fechSoli(LocalDate.now())
-                        .copyBookEntity(copyBookService.getEntity("C001")).build(),
+                        .copyBookEntity(copyBookService.getEntity("C001")).studentEntity(3).build(),
                 RequestEntity.builder().idSoli(0).EstaSoli("Pendiente").fechSoli(LocalDate.now())
-                        .copyBookEntity(copyBookService.getEntity("C006")).build(),
+                        .copyBookEntity(copyBookService.getEntity("C006")).studentEntity(3).build(),
 
                 RequestEntity.builder().idSoli(0).EstaSoli("Pendiente").fechSoli(LocalDate.now())
-                        .copyBookEntity(copyBookService.getEntity("C001")).build(),
+                        .copyBookEntity(copyBookService.getEntity("C001")).studentEntity(4).build(),
                 RequestEntity.builder().idSoli(0).EstaSoli("Pendiente").fechSoli(LocalDate.now())
-                        .copyBookEntity(copyBookService.getEntity("C007")).build(),
+                        .copyBookEntity(copyBookService.getEntity("C007")).studentEntity(4).build(),
 
                 RequestEntity.builder().idSoli(0).EstaSoli("Pendiente").fechSoli(LocalDate.now())
-                        .copyBookEntity(copyBookService.getEntity("C001")).build()
+                        .copyBookEntity(copyBookService.getEntity("C001")).studentEntity(5).build()
         );
 
         requestEntities.forEach(request->requestService.createEntity(request));
@@ -112,65 +112,65 @@ public class AddDataServiceImpl {
         List<LoanEntity> loanEntities = List.of(
                 // libro 1
                 LoanEntity.builder().idPrest(0).fechPres(LocalDate.now()).fechDevoPres(LocalDate.now()).obsePres(null)
-                        .copyBookEntity(copyBookService.getEntity("C001")).build(),
+                        .copyBookEntity(copyBookService.getEntity("C001")).studentEntity(1).librarianEntity(1).build(),
                 LoanEntity.builder().idPrest(0).fechPres(LocalDate.now()).fechDevoPres(LocalDate.now()).obsePres(null)
-                        .copyBookEntity(copyBookService.getEntity("C002")).build(),
+                        .copyBookEntity(copyBookService.getEntity("C002")).studentEntity(1).librarianEntity(1).build(),
 
                 // libro 2
                 LoanEntity.builder().idPrest(0).fechPres(LocalDate.now()).fechDevoPres(LocalDate.now()).obsePres(null)
-                        .copyBookEntity(copyBookService.getEntity("C003")).build(),
+                        .copyBookEntity(copyBookService.getEntity("C003")).studentEntity(2).librarianEntity(1).build(),
                 LoanEntity.builder().idPrest(0).fechPres(LocalDate.now()).fechDevoPres(LocalDate.now()).obsePres(null)
-                        .copyBookEntity(copyBookService.getEntity("C004")).build(),
+                        .copyBookEntity(copyBookService.getEntity("C004")).studentEntity(2).librarianEntity(1).build(),
 
                 // libro 3
                 LoanEntity.builder().idPrest(0).fechPres(LocalDate.now()).fechDevoPres(LocalDate.now()).obsePres(null)
-                        .copyBookEntity(copyBookService.getEntity("C005")).build(),
+                        .copyBookEntity(copyBookService.getEntity("C005")).studentEntity(3).librarianEntity(1).build(),
                 LoanEntity.builder().idPrest(0).fechPres(LocalDate.now()).fechDevoPres(LocalDate.now()).obsePres(null)
-                        .copyBookEntity(copyBookService.getEntity("C006")).build(),
+                        .copyBookEntity(copyBookService.getEntity("C006")).studentEntity(3).librarianEntity(1).build(),
 
                 // libro 4
                 LoanEntity.builder().idPrest(0).fechPres(LocalDate.now()).fechDevoPres(LocalDate.now()).obsePres(null)
-                        .copyBookEntity(copyBookService.getEntity("C007")).build(),
+                        .copyBookEntity(copyBookService.getEntity("C007")).studentEntity(4).librarianEntity(1).build(),
                 LoanEntity.builder().idPrest(0).fechPres(LocalDate.now()).fechDevoPres(LocalDate.now()).obsePres(null)
-                        .copyBookEntity(copyBookService.getEntity("C008")).build(),
+                        .copyBookEntity(copyBookService.getEntity("C008")).studentEntity(4).librarianEntity(1).build(),
 
                 // libro 5
                 LoanEntity.builder().idPrest(0).fechPres(LocalDate.now()).fechDevoPres(LocalDate.now()).obsePres(null)
-                        .copyBookEntity(copyBookService.getEntity("C009")).build(),
+                        .copyBookEntity(copyBookService.getEntity("C009")).studentEntity(5).librarianEntity(1).build(),
                 LoanEntity.builder().idPrest(0).fechPres(LocalDate.now()).fechDevoPres(LocalDate.now()).obsePres(null)
-                        .copyBookEntity(copyBookService.getEntity("C010")).build(),
+                        .copyBookEntity(copyBookService.getEntity("C010")).studentEntity(5).librarianEntity(1).build(),
 
                 // libro 6
                 LoanEntity.builder().idPrest(0).fechPres(LocalDate.now()).fechDevoPres(LocalDate.now()).obsePres(null)
-                        .copyBookEntity(copyBookService.getEntity("C011")).build(),
+                        .copyBookEntity(copyBookService.getEntity("C011")).studentEntity(6).librarianEntity(1).build(),
                 LoanEntity.builder().idPrest(0).fechPres(LocalDate.now()).fechDevoPres(LocalDate.now()).obsePres(null)
-                        .copyBookEntity(copyBookService.getEntity("C012")).build(),
+                        .copyBookEntity(copyBookService.getEntity("C012")).studentEntity(6).librarianEntity(1).build(),
 
                 // libro 7
                 LoanEntity.builder().idPrest(0).fechPres(LocalDate.now()).fechDevoPres(LocalDate.now()).obsePres(null)
-                        .copyBookEntity(copyBookService.getEntity("C013")).build(),
+                        .copyBookEntity(copyBookService.getEntity("C013")).studentEntity(1).librarianEntity(1).build(),
                 LoanEntity.builder().idPrest(0).fechPres(LocalDate.now()).fechDevoPres(LocalDate.now()).obsePres(null)
-                        .copyBookEntity(copyBookService.getEntity("C014")).build(),
+                        .copyBookEntity(copyBookService.getEntity("C014")).studentEntity(1).librarianEntity(1).build(),
 
                 // libro 8
                 LoanEntity.builder().idPrest(0).fechPres(LocalDate.now()).fechDevoPres(LocalDate.now()).obsePres(null)
-                        .copyBookEntity(copyBookService.getEntity("C015")).build(),
+                        .copyBookEntity(copyBookService.getEntity("C015")).studentEntity(1).librarianEntity(1).build(),
                 LoanEntity.builder().idPrest(0).fechPres(LocalDate.now()).fechDevoPres(LocalDate.now()).obsePres(null)
-                        .copyBookEntity(copyBookService.getEntity("C016")).build(),
+                        .copyBookEntity(copyBookService.getEntity("C016")).studentEntity(1).librarianEntity(1).build(),
 
                 // libro 9
                 LoanEntity.builder().idPrest(0).fechPres(LocalDate.now()).fechDevoPres(LocalDate.now()).obsePres(null)
-                        .copyBookEntity(copyBookService.getEntity("C017")).build(),
+                        .copyBookEntity(copyBookService.getEntity("C017")).studentEntity(1).librarianEntity(1).build(),
                 LoanEntity.builder().idPrest(0).fechPres(LocalDate.now()).fechDevoPres(LocalDate.now()).obsePres(null)
-                        .copyBookEntity(copyBookService.getEntity("C018")).build(),
+                        .copyBookEntity(copyBookService.getEntity("C018")).studentEntity(1).librarianEntity(1).build(),
 
                 // libro 10
                 LoanEntity.builder().idPrest(0).fechPres(LocalDate.now()).fechDevoPres(LocalDate.now()).obsePres(null)
-                        .copyBookEntity(copyBookService.getEntity("C019")).build(),
+                        .copyBookEntity(copyBookService.getEntity("C019")).studentEntity(1).librarianEntity(1).build(),
                 LoanEntity.builder().idPrest(0).fechPres(LocalDate.now()).fechDevoPres(LocalDate.now()).obsePres(null)
-                        .copyBookEntity(copyBookService.getEntity("C020")).build(),
+                        .copyBookEntity(copyBookService.getEntity("C020")).studentEntity(1).librarianEntity(1).build(),
                 LoanEntity.builder().idPrest(0).fechPres(LocalDate.now()).fechDevoPres(LocalDate.now()).obsePres(null)
-                        .copyBookEntity(copyBookService.getEntity("C020")).build()
+                        .copyBookEntity(copyBookService.getEntity("C020")).studentEntity(1).librarianEntity(1).build()
         );
 
         loanEntities.forEach(loan->loanService.createEntity(loan));

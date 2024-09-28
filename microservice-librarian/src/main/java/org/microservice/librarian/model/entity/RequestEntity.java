@@ -22,6 +22,9 @@ public class RequestEntity {
     @Column(nullable = false, length = 25)
     private String EstaSoli;
 
+    @Column(nullable = false)
+    private Integer studentEntity;
+
 /*  @ManyToOne
     @JoinColumn(name = "idAlumn", nullable = false)
     private StudentEntity studentEntity;*/

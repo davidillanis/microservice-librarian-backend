@@ -24,10 +24,20 @@ spring:
             predicates:
               - Path=/utils/api/**
 
-          - id: microservice-test2
-            uri: lb://microservice-test2
+          - id: microservice-users
+            uri: http://localhost:8083/ #lb://microservice-test2
             predicates:
-              - Path=/test2/api/**
+              - Path=/users/api/**
+
+          - id: microservice-librarian
+            uri: http://localhost:8084/ #lb://microservice-test2
+            predicates:
+              - Path=/librarian/api/**
+
+          - id: microservice-issue
+            uri: http://localhost:8085/ #lb://microservice-test2
+            predicates:
+              - Path=/issue/api/**
 
 
 eureka:

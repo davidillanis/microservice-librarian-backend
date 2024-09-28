@@ -1,5 +1,6 @@
 package org.microservice.librarian.service.implentation;
 
+import org.microservice.librarian.client.UserRoleClient;
 import org.microservice.librarian.model.entity.LoanEntity;
 import org.microservice.librarian.model.repository.LoanRepository;
 import org.microservice.librarian.service.LoanService;
@@ -12,15 +13,20 @@ import java.util.List;
 public class LoanServiceImpl implements LoanService {
     @Autowired
     private LoanRepository loanRepository;
+    @Autowired
+    private UserRoleClient userRoleClient;
 
 
     @Override
     public boolean createEntity(LoanEntity obj) {
-        if(obj!=null){
+        try {
+            userRoleClient.getUserRoleByUsername(obj.getStudentEntity());
+            userRoleClient.getUserRoleByUsername(obj.getLibrarianEntity());
             loanRepository.save(obj);
             return true;
+        } catch (Exception e) {
+            return false;
         }
-        return false;
     }
 
     @Override
@@ -36,16 +42,21 @@ public class LoanServiceImpl implements LoanService {
     @Override
     public boolean updateEntity(LoanEntity obj) {
         LoanEntity loanEntity=loanRepository.findById(obj.getIdPrest()).orElse(null);
-        if(loanEntity!=null){
+        try {
+            userRoleClient.getUserRoleByUsername(obj.getStudentEntity());
+            userRoleClient.getUserRoleByUsername(obj.getLibrarianEntity());
             loanEntity.setFechPres(obj.getFechPres());
             loanEntity.setFechDevoPres(obj.getFechDevoPres());
             loanEntity.setObsePres(obj.getObsePres());
             loanEntity.setEstaPres(obj.getEstaPres());
             loanEntity.setCopyBookEntity(obj.getCopyBookEntity());
+            loanEntity.setLibrarianEntity(obj.getLibrarianEntity());
+            loanEntity.setStudentEntity(obj.getStudentEntity());
             loanRepository.save(loanEntity);
             return true;
+        }catch (Exception e){
+            return false;
         }
-        return false;
     }
 
     @Override

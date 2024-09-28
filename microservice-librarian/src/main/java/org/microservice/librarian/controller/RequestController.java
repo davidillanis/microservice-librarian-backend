@@ -12,18 +12,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/library/request")
+@RequestMapping("/request")
 public class RequestController {
     @Autowired
     private RequestService requestService;
 
     @PostMapping("/create")
     public ResponseEntity<Boolean> createRequest(@RequestBody RequestEntity requestEntity) {
-        try {
-            return new ResponseEntity<>(requestService.createEntity(requestEntity), HttpStatus.CREATED);
-        }catch (Exception e) {
-            System.out.println(e.getMessage());
-            return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+        Boolean status=requestService.createEntity(requestEntity);
+        if(status){
+            return new ResponseEntity<>(true, HttpStatus.CREATED);
+        }else {
+            return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -56,11 +56,11 @@ public class RequestController {
 
     @PutMapping("/update")
     public ResponseEntity<Boolean> updateBook(@RequestBody RequestEntity requestEntity) {
-        try {
-            return new ResponseEntity<>(requestService.updateEntity(requestEntity), HttpStatus.OK);
-        }catch (Exception e) {
-            System.out.println(e.getMessage());
-            return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+        Boolean status=requestService.updateEntity(requestEntity);
+        if(status){
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
         }
     }
 }

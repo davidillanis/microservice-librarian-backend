@@ -1,6 +1,8 @@
 package org.microservice.librarian;
 
+import org.microservice.librarian.client.UserRoleClient;
 import org.microservice.librarian.service.implentation.AddDataServiceImpl;
+import org.microservice.librarian.util.dto.UserEntityDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -14,6 +16,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 public class MicroserviceLibrarianApplication implements CommandLineRunner {
 	@Autowired
 	private AddDataServiceImpl addDataService;
+	@Autowired
+	private UserRoleClient userRoleClient;
 
 	public static void main(String[] args) {
 		SpringApplication.run(MicroserviceLibrarianApplication.class, args);

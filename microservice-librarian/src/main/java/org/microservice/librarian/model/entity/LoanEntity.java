@@ -19,7 +19,6 @@ public class LoanEntity {
     @Column(nullable = false)
     private LocalDate fechPres;
 
-    @Column(nullable = false)
     private LocalDate fechDevoPres;
 
     @Column(nullable = true, length = 95)

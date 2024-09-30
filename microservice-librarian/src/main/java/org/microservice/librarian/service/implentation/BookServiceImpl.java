@@ -3,7 +3,9 @@ package org.microservice.librarian.service.implentation;
 import org.microservice.librarian.client.BookIssueClient;
 import org.microservice.librarian.model.entity.BookEntity;
 import org.microservice.librarian.model.entity.CopyBookEntity;
+import org.microservice.librarian.model.entity.LoanEntity;
 import org.microservice.librarian.model.repository.BookRepository;
+import org.microservice.librarian.model.repository.LoanRepository;
 import org.microservice.librarian.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,7 @@ import org.microservice.librarian.util.http.request.BookIssueRequest;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -19,6 +22,8 @@ public class BookServiceImpl implements BookService {
     private BookRepository bookRepository;
     @Autowired
     private BookIssueClient bookIssueClient;
+    @Autowired
+    private LoanRepository loanRepository;
 
     @Override
     public boolean createEntity(BookEntity obj) {
@@ -105,22 +110,15 @@ public class BookServiceImpl implements BookService {
     @Override
     public CopyBookEntity searchCopyBookAvailable(String isbn) {
         BookEntity bookEntity=bookRepository.findBookEntityByIsbnLibr(isbn).orElse(null);
-        if(bookEntity!=null) {
-            //return bookEntity.getCopyBookEntities().stream().filter(copyBookEntity -> !copyBookEntity.isEstaPresEjem())
-            //       .findFirst().orElse(null);
-        }
-        return null;
-    }
 
-    /*@Override
-    public CopyBookEntity searchCopyBookAvailable(String isbn) {
-        CopyBookEntity copyBookEntity=null;
-        //return copyBookRepository.findAll().stream().filter(copyBook -> !copyBook.isEstaPresEjem()).findFirst().orElse(null);
-        return copyBookEntity;
+        return bookRepository.findBookEntityByIsbnLibr(isbn)
+                .map(BookEntity::getCopyBookEntities)
+                .flatMap(copyBooks -> copyBooks.stream()
+                        .filter(copyBook -> loanRepository.findTopByCopyBookEntity_CodiEjemOrderByIdPrestDesc(copyBook.getCodiEjem())
+                                .map(LoanEntity::getEstaPres)
+                                .filter(estaPres -> estaPres == 1)
+                                .isPresent() && copyBook.isHabiEjem() && copyBook.isHabiEjem())
+                        .findFirst())
+                .orElse(null);
     }
-    @GetMapping("/search-copy-available/{isbn}")
-    public ResponseEntity<CopyBookEntity> searchCopyBookAvailable(@PathVariable String isbn){
-        return null;
-    }*/
-
 }

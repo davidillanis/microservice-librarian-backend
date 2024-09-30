@@ -11,90 +11,104 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/library/copy-book")
+@RequestMapping("/copy-book")
 public class CopyBookController {
+
     @Autowired
     private CopyBookService copyBookService;
 
     @PostMapping("/create")
-    public ResponseEntity<Boolean> createCopyBook(@RequestBody CopyBookEntity copyBook){
-        System.out.println(copyBook);
+    public ResponseEntity<Boolean> createCopyBook(@RequestBody CopyBookEntity copyBook) {
+        if (copyBook == null) {
+            return ResponseEntity.badRequest().body(false);
+        }
         try {
-            return new ResponseEntity<>(copyBookService.createEntity(copyBook), HttpStatus.CREATED);
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-            return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.CREATED).body(copyBookService.createEntity(copyBook));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
         }
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<CopyBookEntity>> listCopyBook(){
-        List<CopyBookEntity> copyBookEntities=copyBookService.getListEntity().stream().map(copyBook ->{
-                copyBook.getBookEntity().setCopyBookEntities(null);
-
-                copyBook.setLoanEntities(copyBook.getLoanEntities().stream().map(loanEntity -> {
-                    loanEntity.setCopyBookEntity(null);
-                    //loanEntity.setLibrarianEntity(null);
-                    //loanEntity.setStudentEntity(null);
-                    return loanEntity;
-                }).collect(Collectors.toList()));
-
-                copyBook.setRequestEntities(copyBook.getRequestEntities().stream().map(requestEntity -> {
-                    requestEntity.setCopyBookEntity(null);
-                    //requestEntity.setStudentEntity(null);
-                    return requestEntity;
-                }).collect(Collectors.toList()));
-                return copyBook;
-            }).collect(Collectors.toList());
-        return new ResponseEntity<>(copyBookEntities, HttpStatus.OK);
+    public ResponseEntity<List<CopyBookEntity>> listCopyBooks() {
+        try {
+            List<CopyBookEntity> copyBooks = copyBookService.getListEntity().stream()
+                    .peek(copyBook -> {
+                        if (copyBook.getBookEntity() != null) {
+                            copyBook.getBookEntity().setCopyBookEntities(null);
+                        }
+                        clearEntityRelations(copyBook);
+                    })
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(copyBooks);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @GetMapping("/byId/{id}")
-    public ResponseEntity<CopyBookEntity> getCopyBookById(@PathVariable("id") String id){
-        CopyBookEntity copyBook=copyBookService.getEntity(id);
-        copyBook.getBookEntity().setCopyBookEntities(null);
-        copyBook.setRequestEntities(copyBook.getRequestEntities().stream().map(requestEntity -> {
-            requestEntity.setCopyBookEntity(null);
-            //requestEntity.setStudentEntity(null);
-            return requestEntity;
-        }).toList());
-        copyBook.setLoanEntities(copyBook.getLoanEntities().stream().map(loanEntity -> {
-            loanEntity.setCopyBookEntity(null);
-            //loanEntity.setLibrarianEntity(null);
-            //loanEntity.setStudentEntity(null);
-            return loanEntity;
-        }).collect(Collectors.toList()));
-        return new ResponseEntity<>(copyBook, HttpStatus.OK);
+    public ResponseEntity<?> getCopyBookById(@PathVariable String id) {
+        try {
+            CopyBookEntity copyBook = copyBookService.getEntity(id);
+            if (copyBook == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Copy Book not found");
+            }
+            if (copyBook.getBookEntity() != null) {
+                copyBook.getBookEntity().setCopyBookEntities(null);
+            }
+            clearEntityRelations(copyBook);
+            return ResponseEntity.ok(copyBook);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error retrieving Copy Book");
+        }
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Boolean> updateCopyBook(@RequestBody CopyBookEntity copyBook){
+    public ResponseEntity<Boolean> updateCopyBook(@RequestBody CopyBookEntity copyBook) {
+        if (copyBook == null || copyBook.getCodiEjem() == null) {
+            return ResponseEntity.badRequest().body(false);
+        }
         try {
-            return new ResponseEntity<>(copyBookService.updateEntity(copyBook), HttpStatus.OK);
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-            return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.ok(copyBookService.updateEntity(copyBook));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
         }
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Boolean> deleteCopyBook(@PathVariable("id") String id){
-        CopyBookEntity copyBook = copyBookService.getEntity(id);
-        if(copyBook != null){
-            return new ResponseEntity<>(copyBookService.deleteEntity(id), HttpStatus.OK);
+    public ResponseEntity<Boolean> deleteCopyBook(@PathVariable String id) {
+        try {
+            CopyBookEntity copyBook = copyBookService.getEntity(id);
+            if (copyBook == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
+            }
+            return ResponseEntity.ok(copyBookService.deleteEntity(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
         }
-        return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/enable/{id}")
-    public ResponseEntity<Boolean> enableCopyBook(@PathVariable("id") String id, @RequestParam Boolean enable){
-        CopyBookEntity copyBook = copyBookService.getEntity(id);
-        if(copyBook != null){
+    public ResponseEntity<Boolean> enableCopyBook(@PathVariable String id, @RequestParam Boolean enable) {
+        try {
+            CopyBookEntity copyBook = copyBookService.getEntity(id);
+            if (copyBook == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
+            }
             copyBook.setHabiEjem(enable);
-            return new ResponseEntity<>(copyBookService.updateEntity(copyBook), HttpStatus.OK);
+            return ResponseEntity.ok(copyBookService.updateEntity(copyBook));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
         }
-        return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
     }
 
-
+    // Helper method to clean entity relations
+    private void clearEntityRelations(CopyBookEntity copyBook) {
+        copyBook.setLoanEntities(copyBook.getLoanEntities().stream()
+                .peek(loan -> loan.setCopyBookEntity(null))
+                .collect(Collectors.toList()));
+        copyBook.setRequestEntities(copyBook.getRequestEntities().stream()
+                .peek(request -> request.setCopyBookEntity(null))
+                .collect(Collectors.toList()));
+    }
 }

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LoanServiceImpl implements LoanService {
@@ -31,12 +32,23 @@ public class LoanServiceImpl implements LoanService {
 
     @Override
     public List<LoanEntity> getListEntity() {
-        return loanRepository.findAll();
+        return loanRepository.findAll().stream().map(loan -> {
+            loan.getCopyBookEntity().setBookEntity(null);
+            loan.getCopyBookEntity().setLoanEntities(null);
+            loan.getCopyBookEntity().setRequestEntities(null);
+            return loan;
+        }).collect(Collectors.toList());
     }
 
     @Override
     public LoanEntity getEntity(Integer id) {
-        return loanRepository.findById(id).orElse(null);
+        LoanEntity loanEntity = loanRepository.findById(id).orElse(null);
+        if (loanEntity != null) {
+            loanEntity.getCopyBookEntity().setBookEntity(null);
+            loanEntity.getCopyBookEntity().setLoanEntities(null);
+            loanEntity.getCopyBookEntity().setRequestEntities(null);
+        }
+        return loanEntity;
     }
 
     @Override

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/book-issue")
+@RequestMapping("/book-issue")
 public class BookIssueController {
     @Autowired
     private BookIssueService bookIssueService;
@@ -27,7 +27,7 @@ public class BookIssueController {
         try {
             return new ResponseEntity<>(bookIssueService.createEntity(book), HttpStatus.CREATED);
         }catch (Exception e){
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

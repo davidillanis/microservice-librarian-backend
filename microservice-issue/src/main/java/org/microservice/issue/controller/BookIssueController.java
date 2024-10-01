@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,11 +24,14 @@ public class BookIssueController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Boolean> createBook(@RequestBody BookIssueDTO book){
+    public ResponseEntity<?> createBook(@RequestBody BookIssueDTO book){
         try {
             return new ResponseEntity<>(bookIssueService.createEntity(book), HttpStatus.CREATED);
         }catch (Exception e){
-            return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+            Map<String, String> map = new HashMap<>();
+            map.put("status", "false");
+            map.put("message", e.getMessage());
+            return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

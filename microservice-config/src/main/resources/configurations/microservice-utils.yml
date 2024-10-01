@@ -1,20 +1,31 @@
 #spring.application.name=microservice-utils
 
-application.name: microservice-utils
-application.version: 1.0
-application.link: http://localhost:8082/
+application:
+  name: microservice-utils
+  version: 1.0
+  link: http://localhost:8082/
 
+# SERVER CONFIGURATION
 server:
   port: 8082
   servlet:
     context-path: /utils/api/v1
 
+# SPRING APPLICATION CONFIGURATION
 spring:
   application:
     name: microservice-utils
-#  config:
-#    import: optional:configserver:http://localhost:8888
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
 
+  mail:
+    username: dabel6061@gmail.com
+    password: rydzkcnykgegvomb
+
+# EUREKA CONFIGURATION
 eureka:
   client:
     service-url:

@@ -20,6 +20,7 @@
         <module>microservice-users</module>
         <module>microservice-librarian</module>
         <module>microservice-issue</module>
+        <module>microservice-chat</module>
     </modules>
 
     <name>microservice-librarian-backend</name>

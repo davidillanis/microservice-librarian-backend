@@ -1,7 +1,5 @@
 package org.microservice.issue.service.implementation;
 
-
-
 import org.microservice.issue.model.entity.BookEntity;
 import org.microservice.issue.model.entity.IssueEntity;
 import org.microservice.issue.model.repository.BookRepository;
@@ -13,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
 
 @Service
 public class BookIssueServiceImpl implements BookIssueService {

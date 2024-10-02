@@ -12,6 +12,7 @@ import org.microservice.users.model.repository.UserRepository;
 import org.microservice.users.service.UserRoleService;
 import org.microservice.users.utils.dto.AuthCreateUserRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -28,6 +29,8 @@ public class UserRoleServiceImpl implements UserRoleService {
     private LibrarianRepository librarianRepository;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public UserEntity getUserEntityById(Integer id) {
@@ -74,7 +77,7 @@ public class UserRoleServiceImpl implements UserRoleService {
             userRepository.save(UserEntity.builder()
                     .idUsua(0)
                     .username(obj.username())
-                    .password(obj.password())
+                    .password(passwordEncoder.encode(obj.password()))
                     .isEnabled(true)
                     .teleUsua(obj.usuaTele())
                     .DNIUsua(obj.usuaDNI())
@@ -103,7 +106,7 @@ public class UserRoleServiceImpl implements UserRoleService {
     public Boolean updateEntity(AuthCreateUserRequestDTO obj) {
         UserEntity userEntity=userRepository.findUserEntityByUsername(obj.username()).orElse(null);
         if(userEntity!=null){
-            userEntity.setPassword(obj.password());
+            userEntity.setPassword(passwordEncoder.encode(obj.password()));
             userEntity.setNombUsua(obj.usuaNomb());
             userEntity.setApelMaternoUsua(obj.usuaApelMaterno());
             userEntity.setApelPaternoUsua(obj.usuaApelPaterno());

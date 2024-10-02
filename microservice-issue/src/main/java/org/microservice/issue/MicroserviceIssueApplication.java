@@ -10,15 +10,15 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 @EnableDiscoveryClient
 @SpringBootApplication
 public class MicroserviceIssueApplication implements CommandLineRunner {
-	@Autowired
-	private AddDataServiceImpl addDataService;
+	//@Autowired
+	//private AddDataServiceImpl addDataService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(MicroserviceIssueApplication.class, args);
 	}
 
 	@Override
-	public void run(String... args) throws Exception {
-		addDataService.addData();
+	public void run(String... args)  {
+		//addDataService.addData();
 	}
 }

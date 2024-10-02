@@ -12,12 +12,12 @@ spring:
     name: microservice-users
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/microservice #${DB_URL}
-    username: root #${DB_USER}
-    password: dabel #${DB_PASS}
+    url: ${DB_URL} #jdbc:mysql://localhost:3306/microservice
+    username: ${DB_USER} #root
+    password: ${DB_PASS} #dabel
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
 

@@ -1,7 +1,5 @@
 package org.microservice.users.service.implementation;
 
-import org.microservice.users.model.entity.StudentEntity;
-import org.microservice.users.model.repository.StudentRepository;
 import org.microservice.users.service.UserRoleService;
 import org.microservice.users.utils.dto.AuthCreateUserRequestDTO;
 import org.microservice.users.utils.other.ERole;

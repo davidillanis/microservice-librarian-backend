@@ -1,6 +1,7 @@
 package org.microservice.gateway.configuration.security;
 
 import org.microservice.gateway.utils.other.ERole;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,11 +16,15 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
+    @Autowired
+    private JwtUtils jwtUtils;
+
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(csrf->csrf.disable())
@@ -30,7 +35,11 @@ public class SecurityConfig {
                         .requestMatchers("/librarian/api/v1/**").hasRole(ERole.STUDENT.name())
                         .requestMatchers("/issue/api/v1/**").hasRole(ERole.STUDENT.name())
                         .requestMatchers("/utils/api/v1/**").permitAll()
+                        .requestMatchers("/chat/api/v1/**").permitAll()//this endpoint error consume
+
+                        .requestMatchers("/auth/**").permitAll()
                         .anyRequest().denyAll())
+                .addFilterBefore(new JwtTokenValidator(jwtUtils), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 

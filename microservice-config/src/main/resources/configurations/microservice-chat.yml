@@ -7,8 +7,8 @@ application:
 # SERVER CONFIGURATION
 server:
   port: 8086
-  #servlet:
-  #  context-path: /utils/api/v1
+  servlet:
+    context-path: /chat/api/v1
 # SPRING APPLICATION CONFIGURATION
 spring:
   application:

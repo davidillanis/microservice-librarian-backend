@@ -21,37 +21,40 @@ public class UserRoleController {
 
     @GetMapping("/byId/{id}")
     public ResponseEntity<UserEntity> getUserRoleById(@PathVariable Integer id) {
-        return ResponseEntity.ok(userRoleService.getUserEntityById(id));
+        UserEntity userEntity=userRoleService.getUserEntityById(id);
+        userEntity.setPassword(null);
+        return ResponseEntity.ok(userEntity);
     }
 
-    @GetMapping("/byUsername/{username}")
+    @GetMapping("/byUsername/{username}")//this enpoint use in microservice gateway
     public ResponseEntity<UserEntity> getUserRoleByUsername(@PathVariable String username) {
-        return ResponseEntity.ok(userRoleService.getUserEntityByUsername(username));
+        UserEntity userEntity=userRoleService.getUserEntityByUsername(username);
+        //userEntity.setPassword(null);
+        return ResponseEntity.ok(userEntity);
     }
 
     @GetMapping("/student/byId/{id}")
     public ResponseEntity<StudentEntity> getStudent(@PathVariable Integer id) {
-        System.out.println(userRoleService.getStudentById(id).toString().concat(id.toString()));
-        return ResponseEntity.ok(userRoleService.getStudentById(id));
+        StudentEntity student=userRoleService.getStudentById(id);
+        student.getUserEntity().setPassword(null);
+        return ResponseEntity.ok(student);
     }
 
     @GetMapping("/librarian/byId/{id}")
     public ResponseEntity<LibrarianEntity> getLibrarian(@PathVariable Integer id) {
-        return ResponseEntity.ok(userRoleService.getLibrarianById(id));
+        LibrarianEntity librarian=userRoleService.getLibrarianById(id);
+        librarian.getUserEntity().setPassword(null);
+        return ResponseEntity.ok(librarian);
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Map<String, Object>> createUser(@RequestBody AuthCreateUserRequestDTO authUser){
-        Map<String, Object> map=new HashMap<>();
-        try {
-            userRoleService.createEntity(authUser);
-            map.put("status", true);
-            map.put("value", "OK");
-        }catch (Exception e){
-            map.put("status", false);
-            map.put("value", "This Username or dni already exist");
+    public ResponseEntity<Boolean> createUser(@RequestBody AuthCreateUserRequestDTO authUser) {
+        Boolean status = userRoleService.createEntity(authUser);
+        if(status){
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
     @PutMapping("/update")

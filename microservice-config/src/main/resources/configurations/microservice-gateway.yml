@@ -25,19 +25,24 @@ spring:
               - Path=/utils/api/**
 
           - id: microservice-users
-            uri: http://localhost:8083/ #lb://microservice-test2
+            uri: http://localhost:8083/
             predicates:
               - Path=/users/api/**
 
           - id: microservice-librarian
-            uri: http://localhost:8084/ #lb://microservice-test2
+            uri: http://localhost:8084/
             predicates:
               - Path=/librarian/api/**
 
           - id: microservice-issue
-            uri: http://localhost:8085/ #lb://microservice-test2
+            uri: http://localhost:8085/
             predicates:
               - Path=/issue/api/**
+
+          - id: microservice-chat
+            uri: http://localhost:8086/
+            predicates:
+              - Path=/chat/api/**
 
 
 eureka:

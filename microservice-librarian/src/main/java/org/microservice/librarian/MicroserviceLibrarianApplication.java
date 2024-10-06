@@ -12,8 +12,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @SpringBootApplication
 @EnableFeignClients
 public class MicroserviceLibrarianApplication implements CommandLineRunner {
-	//@Autowired
-	//private AddDataServiceImpl addDataService;
+	@Autowired
+	private AddDataServiceImpl addDataService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(MicroserviceLibrarianApplication.class, args);
@@ -21,6 +21,6 @@ public class MicroserviceLibrarianApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		//addDataService.addDataBase();
+		addDataService.addDataBase();
 	}
 }

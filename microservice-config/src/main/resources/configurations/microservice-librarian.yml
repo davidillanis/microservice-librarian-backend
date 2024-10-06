@@ -12,12 +12,12 @@ spring:
     name: microservice-librarian
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/db_librarian
+    url: jdbc:mysql://localhost:3306/microservice
     username: root
     password: dabel
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
 

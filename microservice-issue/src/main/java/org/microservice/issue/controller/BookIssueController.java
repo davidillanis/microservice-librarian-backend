@@ -1,16 +1,21 @@
 package org.microservice.issue.controller;
 
 
+import jakarta.validation.Valid;
 import org.microservice.issue.service.BookIssueService;
 import org.microservice.issue.util.dto.BookIssueDTO;
+import org.microservice.issue.util.dto.ResponseStatusDTO;
+import org.microservice.issue.util.other.EMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/book-issue")
@@ -24,14 +29,23 @@ public class BookIssueController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createBook(@RequestBody BookIssueDTO book){
+    public ResponseEntity<ResponseStatusDTO> createBook(@Valid @RequestBody BookIssueDTO book, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return new ResponseEntity<>(ResponseStatusDTO.builder()
+                    .isSuccess(false).message(EMessage.RESOURCE_NOT_FOUND)
+                    .errors(bindingResult.getFieldErrors().stream()
+                            .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                            .collect(Collectors.toList()))
+                    .build(), HttpStatus.BAD_REQUEST);
+        }
         try {
-            return new ResponseEntity<>(bookIssueService.createEntity(book), HttpStatus.CREATED);
+            bookIssueService.createEntity(book);
+            return new ResponseEntity<>(ResponseStatusDTO.builder()
+                    .isSuccess(true).message(EMessage.SUCCESSFUL).build(), HttpStatus.CREATED);
         }catch (Exception e){
-            Map<String, String> map = new HashMap<>();
-            map.put("status", "false");
-            map.put("message", e.getMessage());
-            return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(ResponseStatusDTO.builder()
+                    .isSuccess(false).message(EMessage.ERROR_INTERNAL_SERVER)
+                    .errors(List.of(e.getMessage())).build(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

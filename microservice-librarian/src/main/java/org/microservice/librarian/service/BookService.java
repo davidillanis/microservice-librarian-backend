@@ -5,19 +5,18 @@ import org.microservice.librarian.model.entity.CopyBookEntity;
 import org.microservice.librarian.util.http.request.BookIssueRequest;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface BookService {
     //create, read, update, delete
-    boolean createEntity(BookEntity obj);
+    void createEntity(BookEntity obj);
     List<BookEntity> getListEntity();
     BookEntity getEntity(Integer id);
-    boolean updateEntity(BookEntity obj);
-    boolean deleteEntity(Integer id);
-    Optional<BookEntity> findBookEntityByIsbnLibr(String isbn);
+    void updateEntity(BookEntity obj);
+    void deleteEntity(Integer id);
+    BookEntity findBookEntityByIsbnLibr(String isbn);
 
     //others
-    Boolean createBookIssue(BookIssueRequest obj);
+    void createBookIssue(BookIssueRequest obj);
     List<BookEntity> getListPopularCopyBook();
     CopyBookEntity searchCopyBookAvailable(String isbn);
 }

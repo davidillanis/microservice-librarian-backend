@@ -11,6 +11,7 @@ import org.microservice.users.model.repository.StudentRepository;
 import org.microservice.users.model.repository.UserRepository;
 import org.microservice.users.service.UserRoleService;
 import org.microservice.users.utils.dto.AuthCreateUserRequestDTO;
+import org.microservice.users.utils.dto.AuthUpdateUserRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -71,40 +72,36 @@ public class UserRoleServiceImpl implements UserRoleService {
     }
 
     @Override
-    public Boolean createEntity(AuthCreateUserRequestDTO obj) {
+    public void createEntity(AuthCreateUserRequestDTO obj) throws Exception {
         //AuthResponseDTO authResponseDTO=userDetailService.createUser(obj);
-        try {
-            userRepository.save(UserEntity.builder()
-                    .idUsua(0)
-                    .username(obj.username())
-                    .password(passwordEncoder.encode(obj.password()))
-                    .isEnabled(true)
-                    .teleUsua(obj.usuaTele())
-                    .DNIUsua(obj.usuaDNI())
-                    .nombUsua(obj.usuaNomb())
-                    .apelPaternoUsua(obj.usuaApelPaterno())
-                    .apelMaternoUsua(obj.usuaApelMaterno())
-                    //.roles(obj.roleList().stream().map(role->roleRepository.findRoleEntityByRole(role).orElse(null)).collect(Collectors.toSet()))
-                    .roles(obj.roleList().stream().map(role-> roleRepository.findRoleEntityByRole(role)
-                            .orElse(new RoleEntity(0, role))).collect(Collectors.toSet()))
-                    .build());
+        userRepository.save(UserEntity.builder()
+                .idUsua(0)
+                .username(obj.username())
+                .password(passwordEncoder.encode(obj.password()))
+                .isEnabled(true)
+                .teleUsua(obj.usuaTele())
+                .DNIUsua(obj.usuaDNI())
+                .nombUsua(obj.usuaNomb())
+                .apelPaternoUsua(obj.usuaApelPaterno())
+                .apelMaternoUsua(obj.usuaApelMaterno())
+                //.roles(obj.roleList().stream().map(role->roleRepository.findRoleEntityByRole(role).orElse(null)).collect(Collectors.toSet()))
+                .roles(obj.roleList().stream().map(role-> roleRepository.findRoleEntityByRole(role)
+                        .orElse(new RoleEntity(0, role))).collect(Collectors.toSet()))
+                .build());
 
-            UserEntity userEntity=userRepository.findUserEntityByUsername(obj.username()).orElse(null);
-            userEntity.getRoles().stream().forEach(roleEntity-> {
-                switch (roleEntity.getRole()){
-                    case LIBRARIAN -> librarianRepository.save(new LibrarianEntity(0, LocalDate.now(), userEntity));
-                    case STUDENT -> studentRepository.save(new StudentEntity(0, LocalDate.now(), userEntity));
-                }
-            });
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+        UserEntity userEntity=userRepository.findUserEntityByUsername(obj.username()).orElse(null);
+        userEntity.getRoles().stream().forEach(roleEntity-> {
+            switch (roleEntity.getRole()){
+                case LIBRARIAN -> librarianRepository.save(new LibrarianEntity(0, LocalDate.now(), userEntity));
+                case STUDENT -> studentRepository.save(new StudentEntity(0, LocalDate.now(), userEntity));
+            }
+        });
     }
 
     @Override
-    public Boolean updateEntity(AuthCreateUserRequestDTO obj) {
-        UserEntity userEntity=userRepository.findUserEntityByUsername(obj.username()).orElse(null);
+    public Boolean updateEntity(AuthUpdateUserRequestDTO obj) {
+        UserEntity userEntity=userRepository.findUserEntityByUsername(obj.username())
+                .orElseThrow(()->new EntityNotFoundException("this "+obj.username()+" user not exists"));
         if(userEntity!=null){
             userEntity.setPassword(passwordEncoder.encode(obj.password()));
             userEntity.setNombUsua(obj.usuaNomb());
@@ -121,10 +118,10 @@ public class UserRoleServiceImpl implements UserRoleService {
 
     @Override
     public Boolean updateEnabledAccount(Integer id, Boolean enabled) {
-        UserEntity userEntity=userRepository.findById(id).orElse(null);
-        if(userEntity!=null){
-            userEntity.setIsEnabled(enabled);
-            userRepository.save(userEntity);
+        UserEntity user =userRepository.findById(id).orElseThrow(()->new EntityNotFoundException("this user not exists"));
+        if(user !=null){
+            user.setIsEnabled(enabled);
+            userRepository.save(user);
             return true;
         }
         return false;
@@ -132,10 +129,10 @@ public class UserRoleServiceImpl implements UserRoleService {
 
     @Override
     public Boolean deleteEntity(Integer id) {
-        UserEntity userEntity=userRepository.findById(id).orElse(null);
-        if(userEntity!=null){
-            userEntity.setRoles(null);
-            userRepository.delete(userEntity);
+        UserEntity user =userRepository.findById(id).orElseThrow(()->new EntityNotFoundException("this user not exists"));
+        if(user !=null){
+            user.setRoles(null);
+            userRepository.delete(user);
             return true;
         }
         return false;

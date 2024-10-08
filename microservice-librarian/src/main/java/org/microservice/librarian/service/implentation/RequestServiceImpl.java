@@ -1,5 +1,6 @@
 package org.microservice.librarian.service.implentation;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.microservice.librarian.client.UserRoleClient;
 import org.microservice.librarian.model.entity.RequestEntity;
 import org.microservice.librarian.model.repository.RequestRepository;
@@ -17,14 +18,10 @@ public class RequestServiceImpl implements RequestService {
     private UserRoleClient userRoleClient;
 
     @Override
-    public boolean createEntity(RequestEntity obj) {
-        try {
-            userRoleClient.getUserRoleByUsername(obj.getStudentEntity());
-            requestRepository.save(obj);
-            return true;
-        }catch (Exception e){
-            return false;
-        }
+    public void createEntity(RequestEntity obj) {
+        userRoleClient.getUserRoleByUsername(obj.getStudentEntity())
+                .orElseThrow(()->new EntityNotFoundException("This student by id "+obj.getStudentEntity()+" does not exist"));
+        requestRepository.save(obj);
     }
 
     @Override
@@ -34,31 +31,26 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public RequestEntity getEntity(Integer id) {
-        return requestRepository.findById(id).orElse(null);
+        return requestRepository.findById(id).orElseThrow(()->new EntityNotFoundException("this "+id+ "not exist"));
     }
 
     @Override
-    public boolean updateEntity(RequestEntity obj) {
-        RequestEntity requestEntity = requestRepository.findById(obj.getIdSoli()).orElse(null);
-        try {
-            userRoleClient.getUserRoleByUsername(obj.getStudentEntity());
-            requestEntity.setEstaSoli(obj.getEstaSoli());
-            requestEntity.setFechSoli(obj.getFechSoli());
-            requestEntity.setStudentEntity(obj.getStudentEntity());
-            requestEntity.setCopyBookEntity(obj.getCopyBookEntity());
-            return true;
-        }catch (Exception e){
-            return false;
-        }
+    public void updateEntity(RequestEntity obj) {
+        RequestEntity requestEntity = requestRepository.findById(obj.getIdSoli())
+                .orElseThrow(()->new EntityNotFoundException("this "+obj.getIdSoli()+ "not exist"));
+
+        userRoleClient.getUserRoleByUsername(obj.getStudentEntity())
+                .orElseThrow(()->new EntityNotFoundException("This student by id "+obj.getStudentEntity()+" does not exist"));
+        requestEntity.setEstaSoli(obj.getEstaSoli());
+        requestEntity.setFechSoli(obj.getFechSoli());
+        requestEntity.setStudentEntity(obj.getStudentEntity());
+        requestEntity.setCopyBookEntity(obj.getCopyBookEntity());
     }
 
     @Override
-    public boolean deleteEntity(Integer id) {
-        RequestEntity requestEntity = requestRepository.findById(id).orElse(null);
-        if(requestEntity!=null){
-            requestRepository.delete(requestEntity);
-            return true;
-        }
-        return false;
+    public void deleteEntity(Integer id) {
+        RequestEntity requestEntity = requestRepository.findById(id)
+                .orElseThrow(()->new EntityNotFoundException("this "+id+ "not exist"));
+        requestRepository.delete(requestEntity);
     }
 }

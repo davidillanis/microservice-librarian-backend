@@ -19,7 +19,7 @@ public class BookEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idLibr;
 
-    @Column(columnDefinition = "CHAR(11)", nullable = false, unique = true)
+    @Column(columnDefinition = "CHAR(13)", nullable = false, unique = true)
     private String isbnLibr;
 
     @ManyToMany(fetch = FetchType.EAGER, targetEntity = IssueEntity.class, cascade = CascadeType.PERSIST)

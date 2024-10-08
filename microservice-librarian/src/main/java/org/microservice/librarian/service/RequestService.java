@@ -6,9 +6,9 @@ import org.microservice.librarian.model.entity.RequestEntity;
 import java.util.List;
 
 public interface RequestService {
-    boolean createEntity(RequestEntity obj);
+    void createEntity(RequestEntity obj);
     List<RequestEntity> getListEntity();
     RequestEntity getEntity(Integer id);
-    boolean updateEntity(RequestEntity obj);
-    boolean deleteEntity(Integer id);
+    void updateEntity(RequestEntity obj);
+    void deleteEntity(Integer id);
 }

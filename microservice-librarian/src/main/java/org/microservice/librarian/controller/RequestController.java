@@ -1,10 +1,15 @@
 package org.microservice.librarian.controller;
 
+import jakarta.validation.Valid;
+import org.microservice.librarian.model.entity.LoanEntity;
 import org.microservice.librarian.model.entity.RequestEntity;
 import org.microservice.librarian.service.RequestService;
+import org.microservice.librarian.util.dto.ResponseStatusDTO;
+import org.microservice.librarian.util.other.EMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -18,12 +23,19 @@ public class RequestController {
     private RequestService requestService;
 
     @PostMapping("/create")
-    public ResponseEntity<Boolean> createRequest(@RequestBody RequestEntity requestEntity) {
-        Boolean status=requestService.createEntity(requestEntity);
-        if(status){
-            return new ResponseEntity<>(true, HttpStatus.CREATED);
-        }else {
-            return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ResponseStatusDTO> createRequest(@Valid @RequestBody RequestEntity requestEntity, BindingResult bindingResult) {
+
+        if(bindingResult.hasErrors()) {
+            return new ResponseEntity<>(ResponseStatusDTO
+                    .responseStatusValid(bindingResult, EMessage.ERROR_VALIDATION), HttpStatus.BAD_REQUEST);
+        }
+        try {
+            requestService.createEntity(requestEntity);
+            return new ResponseEntity<>(ResponseStatusDTO.builder().isSuccess(true).message(EMessage.SUCCESSFUL)
+                    .errors(null).build(), HttpStatus.CREATED);
+        }catch (Exception e) {
+            return new ResponseEntity<>(ResponseStatusDTO.builder().isSuccess(false).message(EMessage.INTERNAL_SERVER_ERROR)
+                    .errors(List.of(e.getMessage())).build(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -43,24 +55,42 @@ public class RequestController {
 
     @GetMapping("/byId/{id}")
     public ResponseEntity<Object> getBookById(@PathVariable Integer id) {
-        RequestEntity requestEntity=requestService.getEntity(id);
-        //requestEntity.getStudentEntity().setRequestEntities(null);
-        //requestEntity.getStudentEntity().setUserEntity(null);
-        //requestEntity.getStudentEntity().setLoanEntities(null);
+        try {
+            RequestEntity requestEntity=requestService.getEntity(id);
+            //requestEntity.getStudentEntity().setRequestEntities(null);
+            //requestEntity.getStudentEntity().setUserEntity(null);
+            //requestEntity.getStudentEntity().setLoanEntities(null);
 
-        requestEntity.getCopyBookEntity().setLoanEntities(null);
-        requestEntity.getCopyBookEntity().setBookEntity(null);
-        requestEntity.getCopyBookEntity().setRequestEntities(null);
-        return new ResponseEntity<>(requestEntity, HttpStatus.OK);
+            requestEntity.getCopyBookEntity().setLoanEntities(null);
+            requestEntity.getCopyBookEntity().setBookEntity(null);
+            requestEntity.getCopyBookEntity().setRequestEntities(null);
+            return new ResponseEntity<>(requestEntity, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(ResponseStatusDTO.builder().isSuccess(false).message(EMessage.RESOURCE_NOT_FOUND)
+                    .errors(List.of(e.getMessage())).build(), HttpStatus.NOT_FOUND);
+        }
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Boolean> updateBook(@RequestBody RequestEntity requestEntity) {
-        Boolean status=requestService.updateEntity(requestEntity);
+    public ResponseEntity<ResponseStatusDTO> updateBook(@RequestBody RequestEntity requestEntity, BindingResult bindingResult) {
+        /*Boolean status=requestService.updateEntity(requestEntity);
         if(status){
             return new ResponseEntity<>(true, HttpStatus.OK);
         }else {
             return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+        }*/
+
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>(ResponseStatusDTO
+                    .responseStatusValid(bindingResult, EMessage.ERROR_VALIDATION), HttpStatus.BAD_REQUEST);
+        }
+        try {
+            requestService.updateEntity(requestEntity);
+            return new ResponseEntity<>(ResponseStatusDTO.builder().isSuccess(true).message(EMessage.SUCCESSFUL)
+                    .errors(null).build(), HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(ResponseStatusDTO.builder().isSuccess(false).message(EMessage.INTERNAL_SERVER_ERROR)
+                    .errors(List.of(e.getMessage())).build(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

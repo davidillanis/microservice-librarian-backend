@@ -5,9 +5,9 @@ import org.microservice.librarian.model.entity.LoanEntity;
 import java.util.List;
 
 public interface LoanService {
-    boolean createEntity(LoanEntity obj);
+    void createEntity(LoanEntity obj);
     List<LoanEntity> getListEntity();
     LoanEntity getEntity(Integer id);
-    boolean updateEntity(LoanEntity obj);
-    boolean deleteEntity(Integer id);
+    void updateEntity(LoanEntity obj);
+    void deleteEntity(Integer id);
 }

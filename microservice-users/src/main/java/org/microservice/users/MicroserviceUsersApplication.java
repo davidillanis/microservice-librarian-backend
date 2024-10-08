@@ -19,6 +19,6 @@ public class MicroserviceUsersApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		addDataService.add();
+		addDataService.addData();
 	}
 }

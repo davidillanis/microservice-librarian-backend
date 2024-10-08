@@ -1,17 +1,20 @@
 package org.microservice.librarian.controller;
 
 
+import jakarta.validation.Valid;
 import org.microservice.librarian.model.entity.BookEntity;
 import org.microservice.librarian.model.entity.CopyBookEntity;
 import org.microservice.librarian.service.BookService;
+import org.microservice.librarian.util.dto.ResponseStatusDTO;
 import org.microservice.librarian.util.http.request.BookIssueRequest;
+import org.microservice.librarian.util.other.EMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -22,28 +25,34 @@ public class BookController {
     private BookService bookService;
 
     @PostMapping("/create")
-    public ResponseEntity<Boolean> createBook(@RequestBody BookEntity bookEntity) {
-        if (bookEntity == null || bookEntity.getIsbnLibr() == null) {
-            return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ResponseStatusDTO> createBook(@Valid @RequestBody BookEntity bookEntity, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>(ResponseStatusDTO
+                    .responseStatusValid(bindingResult, EMessage.ERROR_VALIDATION), HttpStatus.BAD_REQUEST);
         }
         try {
-            boolean result = bookService.createEntity(bookEntity);
-            return new ResponseEntity<>(result, HttpStatus.CREATED);
+            bookService.createEntity(bookEntity);
+            return new ResponseEntity<>(ResponseStatusDTO.builder().isSuccess(true).message(EMessage.SUCCESSFUL)
+                    .errors(null).build(), HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(ResponseStatusDTO.builder().isSuccess(false).message(EMessage.INTERNAL_SERVER_ERROR)
+                    .errors(List.of(e.getMessage())).build(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PostMapping("/create/book-issue")
-    public ResponseEntity<?> createBookIssue(@RequestBody BookIssueRequest bookIssueRequest) {
-        if (bookIssueRequest == null || bookIssueRequest.getIsbnLibr() == null) {
-            return new ResponseEntity<>("Invalid request data", HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> createBookIssue(@Valid @RequestBody BookIssueRequest bookIssueRequest, BindingResult binding) {
+        if (binding.hasErrors()) {
+            return new ResponseEntity<>(ResponseStatusDTO
+                    .responseStatusValid(binding, EMessage.ERROR_VALIDATION), HttpStatus.BAD_REQUEST);
         }
         try {
-            boolean result = bookService.createBookIssue(bookIssueRequest);
-            return new ResponseEntity<>(result, HttpStatus.CREATED);
+            bookService.createBookIssue(bookIssueRequest);
+            return new ResponseEntity<>(ResponseStatusDTO.builder().isSuccess(true).message(EMessage.SUCCESSFUL)
+                    .errors(null).build(), HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>("Failed to create book issue"+e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(ResponseStatusDTO.builder().isSuccess(false).message(EMessage.INTERNAL_SERVER_ERROR)
+                    .errors(List.of(e.getMessage())).build(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -67,11 +76,7 @@ public class BookController {
     @GetMapping("/searchByISBN/{isbn}")
     public ResponseEntity<?> listBooksByISBN(@PathVariable("isbn") String isbn) {
         try {
-            Optional<BookEntity> bookOpt = bookService.findBookEntityByIsbnLibr(isbn);
-            if (bookOpt.isEmpty()) {
-                return new ResponseEntity<>("Book not found", HttpStatus.NOT_FOUND);
-            }
-            BookEntity bookEntity = bookOpt.get();
+            BookEntity bookEntity = bookService.findBookEntityByIsbnLibr(isbn);
             bookEntity.setCopyBookEntities(
                     bookEntity.getCopyBookEntities().stream().map(copyBook -> {
                         copyBook.setBookEntity(null);
@@ -82,7 +87,8 @@ public class BookController {
             );
             return new ResponseEntity<>(bookEntity, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("Error retrieving book-"+e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(ResponseStatusDTO.builder().isSuccess(false).message(EMessage.RESOURCE_NOT_FOUND)
+                    .errors(List.of(e.getMessage())).build(), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -91,14 +97,16 @@ public class BookController {
         try {
             CopyBookEntity copyBookEntity = bookService.searchCopyBookAvailable(isbn);
             if (copyBookEntity == null) {
-                return new ResponseEntity<>("No available copies found", HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(ResponseStatusDTO.builder().isSuccess(false).message(EMessage.RESOURCE_NOT_FOUND)
+                        .errors(List.of("No available copies found")).build(), HttpStatus.NOT_FOUND);
             }
             copyBookEntity.setRequestEntities(null);
             copyBookEntity.setLoanEntities(null);
             copyBookEntity.setBookEntity(null);
             return new ResponseEntity<>(copyBookEntity, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("Error searching for available copy-"+e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(ResponseStatusDTO.builder().isSuccess(false).message(EMessage.INTERNAL_SERVER_ERROR)
+                    .errors(List.of(e.getMessage())).build(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -120,15 +128,19 @@ public class BookController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Boolean> updateBook(@RequestBody BookEntity bookEntity) {
-        if (bookEntity == null || bookEntity.getIsbnLibr() == null) {
-            return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ResponseStatusDTO> updateBook(@Valid @RequestBody BookEntity bookEntity, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>(ResponseStatusDTO
+                    .responseStatusValid(bindingResult, EMessage.ERROR_VALIDATION), HttpStatus.BAD_REQUEST);
         }
         try {
-            boolean result = bookService.updateEntity(bookEntity);
-            return new ResponseEntity<>(result, HttpStatus.OK);
+            bookService.updateEntity(bookEntity);
+            return new ResponseEntity<>(ResponseStatusDTO.builder().isSuccess(true).message(EMessage.SUCCESSFUL)
+                    .errors(null).build(), HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(ResponseStatusDTO.builder().isSuccess(false).message(EMessage.ERROR_GENERIC)
+                    .errors(List.of(e.getMessage())).build(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

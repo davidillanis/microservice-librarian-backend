@@ -1,5 +1,6 @@
 package org.microservice.librarian.service.implentation;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.microservice.librarian.client.UserRoleClient;
 import org.microservice.librarian.model.entity.LoanEntity;
 import org.microservice.librarian.model.repository.LoanRepository;
@@ -19,15 +20,12 @@ public class LoanServiceImpl implements LoanService {
 
 
     @Override
-    public boolean createEntity(LoanEntity obj) {
-        try {
-            userRoleClient.getUserRoleByUsername(obj.getStudentEntity());
-            userRoleClient.getUserRoleByUsername(obj.getLibrarianEntity());
-            loanRepository.save(obj);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+    public void createEntity(LoanEntity obj) {
+        userRoleClient.getUserRoleByUsername(obj.getStudentEntity())
+                .orElseThrow(()->new EntityNotFoundException("This student by id "+obj.getStudentEntity()+" does not exist"));
+        userRoleClient.getUserRoleByUsername(obj.getLibrarianEntity())
+                .orElseThrow(()->new EntityNotFoundException("This librarian by id "+obj.getLibrarianEntity()+" does not exist"));
+        loanRepository.save(obj);
     }
 
     @Override
@@ -42,42 +40,36 @@ public class LoanServiceImpl implements LoanService {
 
     @Override
     public LoanEntity getEntity(Integer id) {
-        LoanEntity loanEntity = loanRepository.findById(id).orElse(null);
-        if (loanEntity != null) {
-            loanEntity.getCopyBookEntity().setBookEntity(null);
-            loanEntity.getCopyBookEntity().setLoanEntities(null);
-            loanEntity.getCopyBookEntity().setRequestEntities(null);
-        }
+        LoanEntity loanEntity = loanRepository.findById(id)
+                .orElseThrow(()->new EntityNotFoundException("This id "+id+" does not exist!"));
+        loanEntity.getCopyBookEntity().setBookEntity(null);
+        loanEntity.getCopyBookEntity().setLoanEntities(null);
+        loanEntity.getCopyBookEntity().setRequestEntities(null);
         return loanEntity;
     }
 
     @Override
-    public boolean updateEntity(LoanEntity obj) {
-        LoanEntity loanEntity=loanRepository.findById(obj.getIdPrest()).orElse(null);
-        try {
-            userRoleClient.getUserRoleByUsername(obj.getStudentEntity());
-            userRoleClient.getUserRoleByUsername(obj.getLibrarianEntity());
-            loanEntity.setFechPres(obj.getFechPres());
-            loanEntity.setFechDevoPres(obj.getFechDevoPres());
-            loanEntity.setObsePres(obj.getObsePres());
-            loanEntity.setEstaPres(obj.getEstaPres());
-            loanEntity.setCopyBookEntity(obj.getCopyBookEntity());
-            loanEntity.setLibrarianEntity(obj.getLibrarianEntity());
-            loanEntity.setStudentEntity(obj.getStudentEntity());
-            loanRepository.save(loanEntity);
-            return true;
-        }catch (Exception e){
-            return false;
-        }
+    public void updateEntity(LoanEntity obj) {
+        LoanEntity loanEntity=loanRepository.findById(obj.getIdPrest())
+                .orElseThrow(()->new EntityNotFoundException("This id "+obj.getIdPrest()+" does not exist!"));
+        userRoleClient.getUserRoleByUsername(obj.getStudentEntity())
+                .orElseThrow(()->new EntityNotFoundException("This student by id "+obj.getStudentEntity()+" does not exist"));
+        userRoleClient.getUserRoleByUsername(obj.getLibrarianEntity())
+                .orElseThrow(()->new EntityNotFoundException("This librarian by id "+obj.getLibrarianEntity()+" does not exist"));
+        loanEntity.setFechPres(obj.getFechPres());
+        loanEntity.setFechDevoPres(obj.getFechDevoPres());
+        loanEntity.setObsePres(obj.getObsePres());
+        loanEntity.setEstaPres(obj.getEstaPres());
+        loanEntity.setCopyBookEntity(obj.getCopyBookEntity());
+        loanEntity.setLibrarianEntity(obj.getLibrarianEntity());
+        loanEntity.setStudentEntity(obj.getStudentEntity());
+        loanRepository.save(loanEntity);
     }
 
     @Override
-    public boolean deleteEntity(Integer id) {
-        LoanEntity loanEntity=loanRepository.findById(id).orElse(null);
-        if(loanEntity!=null){
-            loanRepository.delete(loanEntity);
-            return true;
-        }
-        return false;
+    public void deleteEntity(Integer id) {
+        LoanEntity loanEntity=loanRepository.findById(id)
+                .orElseThrow(()->new EntityNotFoundException("This id "+id+" does not exist!"));
+        loanRepository.delete(loanEntity);
     }
 }

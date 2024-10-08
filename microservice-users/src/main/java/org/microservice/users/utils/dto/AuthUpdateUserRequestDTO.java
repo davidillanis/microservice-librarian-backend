@@ -7,7 +7,7 @@ import org.microservice.users.utils.other.ERole;
 
 import java.util.List;
 
-public record AuthCreateUserRequestDTO(
+public record AuthUpdateUserRequestDTO(
         @Size(min = 4, max = 25, message = "this size min 4, max 25")
         @NotBlank(message = "This Username is not empty")
         String username,
@@ -29,8 +29,6 @@ public record AuthCreateUserRequestDTO(
         String usuaDNI,
 
         @Size(min = 9, max = 15, message = "this Telephone invalid length min 9, max 15")
-        String usuaTele,
-
-        @NotNull List<ERole> roleList
+        String usuaTele
 ) {
 }

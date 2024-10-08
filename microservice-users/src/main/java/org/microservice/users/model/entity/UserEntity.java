@@ -2,7 +2,6 @@ package org.microservice.users.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.microservice.users.utils.other.ERole;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -1,5 +1,6 @@
 package org.microservice.librarian.service.implentation;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.microservice.librarian.client.BookIssueClient;
 import org.microservice.librarian.model.entity.BookEntity;
 import org.microservice.librarian.model.entity.CopyBookEntity;
@@ -13,8 +14,6 @@ import org.microservice.librarian.util.dto.BookIssueDTO;
 import org.microservice.librarian.util.http.request.BookIssueRequest;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -26,12 +25,8 @@ public class BookServiceImpl implements BookService {
     private LoanRepository loanRepository;
 
     @Override
-    public boolean createEntity(BookEntity obj) {
-        if(obj!=null){
-            bookRepository.save(obj);
-            return true;
-        }
-        return false;
+    public void createEntity(BookEntity obj) {
+        bookRepository.save(obj);
     }
 
     @Override
@@ -41,65 +36,50 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookEntity getEntity(Integer id) {
-        return bookRepository.findById(id).orElse(null);
+        return bookRepository.findById(id).orElseThrow(()->new EntityNotFoundException("this "+id+" id not exist"));
     }
 
     @Override
-    public boolean updateEntity(BookEntity obj) {
-        if(obj!=null) {
-            BookEntity bookEntity = bookRepository.findById(obj.getIdLibr()).orElse(null);
-            if(bookEntity!=null) {
-                bookEntity.setTituLibr(obj.getTituLibr());
-                bookEntity.setDescLibr(obj.getDescLibr());
-                bookEntity.setFechPublLibr(obj.getFechPublLibr());
-                bookEntity.setEditLibr(obj.getEditLibr());
-                bookEntity.setAutoLibr(obj.getAutoLibr());
-                //bookEntity.setCopyBookEntities(obj.getCopyBookEntities());
-                bookRepository.save(bookEntity);
-                return true;
-            }
-            return false;
-        }
-        return false;
+    public void updateEntity(BookEntity obj) {
+        BookEntity bookEntity = bookRepository.findById(obj.getIdLibr())
+                .orElseThrow(()->new EntityNotFoundException("this id book not exist"));
+        bookEntity.setTituLibr(obj.getTituLibr());
+        bookEntity.setDescLibr(obj.getDescLibr());
+        bookEntity.setFechPublLibr(obj.getFechPublLibr());
+        bookEntity.setEditLibr(obj.getEditLibr());
+        bookEntity.setAutoLibr(obj.getAutoLibr());
+        //bookEntity.setCopyBookEntities(obj.getCopyBookEntities());
+        bookRepository.save(bookEntity);
     }
 
     @Override
-    public boolean deleteEntity(Integer id) {
-        if(id!=null && bookRepository.existsById(id)) {
-            bookRepository.deleteById(id);
-        }
-        return false;
+    public void deleteEntity(Integer id) {
+        BookEntity bookEntity = bookRepository.findById(id)
+                .orElseThrow(()->new EntityNotFoundException("this id "+id+" not exist"));
+        bookRepository.delete(bookEntity);
     }
 
     @Override
-    public Optional<BookEntity> findBookEntityByIsbnLibr(String isbn) {
-        if(isbn!=null){
-            return bookRepository.findBookEntityByIsbnLibr(isbn);
-        }
-        return Optional.empty();
+    public BookEntity findBookEntityByIsbnLibr(String isbn) {
+        return bookRepository.findBookEntityByIsbnLibr(isbn)
+                .orElseThrow(()->new EntityNotFoundException("This isbn "+isbn+" not exist or this null"));
     }
 
 
     @Override
-    public Boolean createBookIssue(BookIssueRequest obj) {
-        if(obj!=null) {
-            BookEntity bookEntity=BookEntity.builder()
-                    .tituLibr(obj.getTituLibr())
-                    .isbnLibr(obj.getIsbnLibr())
-                    .descLibr(obj.getDescLibr())
-                    .fechPublLibr(obj.getFechPublLibr())
-                    .editLibr(obj.getEditLibr())
-                    .autoLibr(obj.getAutoLibr())
-                    .build();
+    public void createBookIssue(BookIssueRequest obj) {
+        BookEntity bookEntity=BookEntity.builder()
+                .tituLibr(obj.getTituLibr())
+                .isbnLibr(obj.getIsbnLibr())
+                .descLibr(obj.getDescLibr())
+                .fechPublLibr(obj.getFechPublLibr())
+                .editLibr(obj.getEditLibr())
+                .autoLibr(obj.getAutoLibr())
+                .build();
 
-            BookIssueDTO bookIssueDTO= BookIssueDTO.builder().isbnLibr(obj.getIsbnLibr()).listIssue(obj.getListIssue()).build();
-
-            bookRepository.save(bookEntity);
-            bookIssueClient.createBookIssue(bookIssueDTO);
-            return true;
-        }
-
-        return false;
+        BookIssueDTO bookIssueDTO= BookIssueDTO.builder().isbnLibr(obj.getIsbnLibr()).listIssue(obj.getListIssue()).build();
+         bookRepository.save(bookEntity);
+         bookIssueClient.createBookIssue(bookIssueDTO);
     }
 
     @Override
@@ -109,8 +89,6 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public CopyBookEntity searchCopyBookAvailable(String isbn) {
-        BookEntity bookEntity=bookRepository.findBookEntityByIsbnLibr(isbn).orElse(null);
-
         return bookRepository.findBookEntityByIsbnLibr(isbn)
                 .map(BookEntity::getCopyBookEntities)
                 .flatMap(copyBooks -> copyBooks.stream()

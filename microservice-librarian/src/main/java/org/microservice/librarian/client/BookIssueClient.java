@@ -1,5 +1,6 @@
 package org.microservice.librarian.client;
 
+import org.microservice.librarian.util.dto.ResponseStatusDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,5 +10,5 @@ import org.microservice.librarian.util.dto.BookIssueDTO;
 public interface BookIssueClient {
 
     @PostMapping("/create")
-    Boolean createBookIssue(@RequestBody BookIssueDTO bookIssueDTO) ;
+    ResponseStatusDTO createBookIssue(@RequestBody BookIssueDTO bookIssueDTO) ;
 }

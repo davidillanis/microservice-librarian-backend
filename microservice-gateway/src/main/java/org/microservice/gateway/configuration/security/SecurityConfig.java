@@ -56,7 +56,7 @@ public class SecurityConfig {
                         .requestMatchers("/librarian/api/v1/copy-book/create").hasRole(ERole.LIBRARIAN.name())
                         .requestMatchers("/librarian/api/v1/copy-book/update").hasRole(ERole.LIBRARIAN.name())
                         .requestMatchers("/librarian/api/v1/copy-book/delete/**").hasRole(ERole.LIBRARIAN.name())//ROLE ADMIN
-                        .requestMatchers("/librarian/api/v1/copy-book/enable/**").hasRole(ERole.LIBRARIAN.name())
+                        .requestMatchers("/librarian/api/v1/copy-book/enable/**").hasRole(ERole.LIBRARIAN.name())//DEPRECATED
 
                         .requestMatchers("/librarian/api/v1/loan/byId/**").hasAnyRole(ERole.LIBRARIAN.name(), ERole.STUDENT.name())
                         .requestMatchers("/librarian/api/v1/loan/create").hasRole(ERole.LIBRARIAN.name())

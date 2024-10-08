@@ -1,14 +1,17 @@
 package org.microservice.librarian.controller;
 
+import jakarta.validation.Valid;
 import org.microservice.librarian.model.entity.CopyBookEntity;
 import org.microservice.librarian.service.CopyBookService;
+import org.microservice.librarian.util.dto.ResponseStatusDTO;
+import org.microservice.librarian.util.other.EMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/copy-book")
@@ -18,29 +21,25 @@ public class CopyBookController {
     private CopyBookService copyBookService;
 
     @PostMapping("/create")
-    public ResponseEntity<Boolean> createCopyBook(@RequestBody CopyBookEntity copyBook) {
-        if (copyBook == null) {
-            return ResponseEntity.badRequest().body(false);
+    public ResponseEntity<ResponseStatusDTO> createCopyBook(@Valid @RequestBody CopyBookEntity copyBook, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>(ResponseStatusDTO
+                    .responseStatusValid(bindingResult, EMessage.ERROR_VALIDATION), HttpStatus.BAD_REQUEST);
         }
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(copyBookService.createEntity(copyBook));
+            copyBookService.createEntity(copyBook);
+            return new ResponseEntity<>(ResponseStatusDTO.builder().isSuccess(true).message(EMessage.SUCCESSFUL)
+                    .errors(null).build(), HttpStatus.CREATED);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
+            return new ResponseEntity<>(ResponseStatusDTO.builder().isSuccess(false).message(EMessage.INTERNAL_SERVER_ERROR)
+                    .errors(List.of(e.getMessage())).build(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping("/list")
     public ResponseEntity<List<CopyBookEntity>> listCopyBooks() {
         try {
-            List<CopyBookEntity> copyBooks = copyBookService.getListEntity().stream()
-                    .peek(copyBook -> {
-                        if (copyBook.getBookEntity() != null) {
-                            copyBook.getBookEntity().setCopyBookEntities(null);
-                        }
-                        clearEntityRelations(copyBook);
-                    })
-                    .collect(Collectors.toList());
-            return ResponseEntity.ok(copyBooks);
+            return ResponseEntity.ok(copyBookService.getListEntity());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
@@ -50,65 +49,56 @@ public class CopyBookController {
     public ResponseEntity<?> getCopyBookById(@PathVariable String id) {
         try {
             CopyBookEntity copyBook = copyBookService.getEntity(id);
-            if (copyBook == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Copy Book not found");
-            }
-            if (copyBook.getBookEntity() != null) {
-                copyBook.getBookEntity().setCopyBookEntities(null);
-            }
-            clearEntityRelations(copyBook);
-            return ResponseEntity.ok(copyBook);
+            return new ResponseEntity<>(copyBook, HttpStatus.OK);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error retrieving Copy Book");
+            return new ResponseEntity<>(ResponseStatusDTO.builder().isSuccess(false).message(EMessage.RESOURCE_NOT_FOUND)
+                    .errors(List.of(e.getMessage())).build(), HttpStatus.NOT_FOUND);
         }
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Boolean> updateCopyBook(@RequestBody CopyBookEntity copyBook) {
-        if (copyBook == null || copyBook.getCodiEjem() == null) {
-            return ResponseEntity.badRequest().body(false);
+    public ResponseEntity<ResponseStatusDTO> updateCopyBook(@Valid @RequestBody CopyBookEntity copyBook, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>(ResponseStatusDTO
+                    .responseStatusValid(bindingResult, EMessage.ERROR_VALIDATION), HttpStatus.BAD_REQUEST);
         }
         try {
-            return ResponseEntity.ok(copyBookService.updateEntity(copyBook));
+            copyBookService.updateEntity(copyBook);
+            return new ResponseEntity<>(ResponseStatusDTO.builder().isSuccess(true).message(EMessage.SUCCESSFUL)
+                    .errors(null).build(), HttpStatus.CREATED);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
+            return new ResponseEntity<>(ResponseStatusDTO.builder().isSuccess(false).message(EMessage.INTERNAL_SERVER_ERROR)
+                    .errors(List.of(e.getMessage())).build(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Boolean> deleteCopyBook(@PathVariable String id) {
+    public ResponseEntity<ResponseStatusDTO> deleteCopyBook(@PathVariable String id) {
         try {
-            CopyBookEntity copyBook = copyBookService.getEntity(id);
-            if (copyBook == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
-            }
-            return ResponseEntity.ok(copyBookService.deleteEntity(id));
+            copyBookService.deleteEntity(id);
+            return new ResponseEntity<>(ResponseStatusDTO.builder().isSuccess(true).message(EMessage.SUCCESSFUL)
+                    .errors(null).build(), HttpStatus.OK);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
+            return new ResponseEntity<>(ResponseStatusDTO.builder().isSuccess(false).message(EMessage.ERROR_GENERIC)
+                    .errors(List.of(e.getMessage())).build(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @DeleteMapping("/enable/{id}")
-    public ResponseEntity<Boolean> enableCopyBook(@PathVariable String id, @RequestParam Boolean enable) {
+    public ResponseEntity<ResponseStatusDTO> enableCopyBook(@PathVariable String id, @RequestParam Boolean enable) {
+        //this Book entity is null
         try {
             CopyBookEntity copyBook = copyBookService.getEntity(id);
-            if (copyBook == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
-            }
+            copyBook.setCodiEjem("C003");
             copyBook.setHabiEjem(enable);
-            return ResponseEntity.ok(copyBookService.updateEntity(copyBook));
+            copyBookService.updateEntity(copyBook);
+            return new ResponseEntity<>(ResponseStatusDTO.builder().isSuccess(true).message(EMessage.SUCCESSFUL)
+                    .errors(null).build(), HttpStatus.OK);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
+            return new ResponseEntity<>(ResponseStatusDTO.builder().isSuccess(false).message(EMessage.ERROR_GENERIC)
+                    .errors(List.of("THIS ENDPOINT DEPRECATED", e.getMessage())).build(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    // Helper method to clean entity relations
-    private void clearEntityRelations(CopyBookEntity copyBook) {
-        copyBook.setLoanEntities(copyBook.getLoanEntities().stream()
-                .peek(loan -> loan.setCopyBookEntity(null))
-                .collect(Collectors.toList()));
-        copyBook.setRequestEntities(copyBook.getRequestEntities().stream()
-                .peek(request -> request.setCopyBookEntity(null))
-                .collect(Collectors.toList()));
-    }
 }

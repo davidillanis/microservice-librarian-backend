@@ -46,6 +46,9 @@ public class BookEntity {
     @Column(nullable = false, length = 45)
     private String autoLibr;
 
+    @Column(length = 255)
+    private String urlImage;
+
     @OneToMany(targetEntity = CopyBookEntity.class, cascade = CascadeType.ALL, mappedBy = "bookEntity")
     private List<CopyBookEntity> copyBookEntities;
 }

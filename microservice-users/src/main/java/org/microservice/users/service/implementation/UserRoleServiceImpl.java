@@ -93,7 +93,7 @@ public class UserRoleServiceImpl implements UserRoleService {
         userEntity.getRoles().stream().forEach(roleEntity-> {
             switch (roleEntity.getRole()){
                 case LIBRARIAN -> librarianRepository.save(new LibrarianEntity(0, LocalDate.now(), userEntity));
-                case STUDENT -> studentRepository.save(new StudentEntity(0, LocalDate.now(), userEntity));
+                case STUDENT -> studentRepository.save(new StudentEntity(0, LocalDate.now(), "1A", "PRIMARIA", userEntity));
             }
         });
     }

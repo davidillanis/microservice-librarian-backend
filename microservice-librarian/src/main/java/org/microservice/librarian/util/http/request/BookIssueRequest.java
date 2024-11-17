@@ -29,6 +29,9 @@ public class BookIssueRequest {
     @NotBlank(message = "not blank")
     private String autoLibr;
 
+    @NotBlank(message = "not blank")
+    private String urlImage;
+
     @NotNull(message = "not null")
     private List<String> listIssue;
 }

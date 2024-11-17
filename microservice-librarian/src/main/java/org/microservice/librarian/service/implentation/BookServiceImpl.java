@@ -48,6 +48,7 @@ public class BookServiceImpl implements BookService {
         bookEntity.setFechPublLibr(obj.getFechPublLibr());
         bookEntity.setEditLibr(obj.getEditLibr());
         bookEntity.setAutoLibr(obj.getAutoLibr());
+        bookEntity.setUrlImage(obj.getUrlImage());
         //bookEntity.setCopyBookEntities(obj.getCopyBookEntities());
         bookRepository.save(bookEntity);
     }
@@ -75,6 +76,7 @@ public class BookServiceImpl implements BookService {
                 .fechPublLibr(obj.getFechPublLibr())
                 .editLibr(obj.getEditLibr())
                 .autoLibr(obj.getAutoLibr())
+                .urlImage(obj.getUrlImage())
                 .build();
 
         BookIssueDTO bookIssueDTO= BookIssueDTO.builder().isbnLibr(obj.getIsbnLibr()).listIssue(obj.getListIssue()).build();

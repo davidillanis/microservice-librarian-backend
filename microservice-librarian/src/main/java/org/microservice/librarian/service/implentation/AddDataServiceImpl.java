@@ -35,16 +35,26 @@ public class AddDataServiceImpl {
 
     private void addBook(){
         List<BookEntity> bookEntities= Arrays.asList(
-                BookEntity.builder().idLibr(0).tituLibr("To Kill a Mockingbird").isbnLibr("9780061120084").fechPublLibr(LocalDate.now()).editLibr("J.B. Lippincott & Co.").autoLibr("Harper Lee").copyBookEntities(null).build(),
-                BookEntity.builder().idLibr(0).tituLibr("1984").isbnLibr("9780451524935").fechPublLibr(LocalDate.now()).editLibr("Secker & Warburg").autoLibr("George Orwell").copyBookEntities(null).build(),
-                BookEntity.builder().idLibr(0).tituLibr("Pride and Prejudice").isbnLibr("9780679783268").fechPublLibr(LocalDate.of(1813, 1, 28)).editLibr("T. Egerton, Whitehall").autoLibr("Jane Austen").copyBookEntities(null).build(),
-                BookEntity.builder().idLibr(0).tituLibr("The Catcher in the Rye").isbnLibr("9780316769488").fechPublLibr(LocalDate.of(1951, 7, 16)).editLibr("Little, Brown and Company").autoLibr("J.D. Salinger").copyBookEntities(null).build(),
-                BookEntity.builder().idLibr(0).tituLibr("The Great Gatsby").isbnLibr("9780743273565").fechPublLibr(LocalDate.of(1925, 4, 10)).editLibr("Charles Scribner's Sons").autoLibr("F. Scott Fitzgerald").copyBookEntities(null).build(),
-                BookEntity.builder().idLibr(0).tituLibr("Moby-Dick").isbnLibr("9781503280786").fechPublLibr(LocalDate.of(1851, 10, 18)).editLibr("Harper & Brothers").autoLibr("Herman Melville").copyBookEntities(null).build(),
-                BookEntity.builder().idLibr(0).tituLibr("War and Peace").isbnLibr("9780199232765").fechPublLibr(LocalDate.of(1869, 1, 1)).editLibr("The Russian Messenger").autoLibr("Leo Tolstoy").copyBookEntities(null).build(),
-                BookEntity.builder().idLibr(0).tituLibr("The Hobbit").isbnLibr("9780547928227").fechPublLibr(LocalDate.of(1937, 9, 21)).editLibr("George Allen & Unwin").autoLibr("J.R.R. Tolkien").copyBookEntities(null).build(),
-                BookEntity.builder().idLibr(0).tituLibr("Fahrenheit 451").isbnLibr("9781451673319").fechPublLibr(LocalDate.of(1953, 10, 19)).editLibr("Ballantine Books").autoLibr("Ray Bradbury").copyBookEntities(null).build(),
-                BookEntity.builder().idLibr(0).tituLibr("Brave New World").isbnLibr("9780060850524").fechPublLibr(LocalDate.of(1932, 1, 1)).editLibr("Chatto & Windus").autoLibr("Aldous Huxley").copyBookEntities(null).build()
+                BookEntity.builder().idLibr(0).urlImage("https://m.media-amazon.com/images/I/81iU2inbgLL._UF1000,1000_QL80_.jpg")
+                        .tituLibr("To Kill a Mockingbird").isbnLibr("9780061120084").fechPublLibr(LocalDate.now()).editLibr("J.B. Lippincott & Co.").autoLibr("Harper Lee").copyBookEntities(null).build(),
+                BookEntity.builder().idLibr(0).urlImage("https://m.media-amazon.com/images/I/81iU2inbgLL._UF1000,1000_QL80_.jpg")
+                        .tituLibr("1984").isbnLibr("9780451524935").fechPublLibr(LocalDate.now()).editLibr("Secker & Warburg").autoLibr("George Orwell").copyBookEntities(null).build(),
+                BookEntity.builder().idLibr(0).urlImage("https://m.media-amazon.com/images/I/81iU2inbgLL._UF1000,1000_QL80_.jpg")
+                        .tituLibr("Pride and Prejudice").isbnLibr("9780679783268").fechPublLibr(LocalDate.of(1813, 1, 28)).editLibr("T. Egerton, Whitehall").autoLibr("Jane Austen").copyBookEntities(null).build(),
+                BookEntity.builder().idLibr(0).urlImage("https://m.media-amazon.com/images/I/81iU2inbgLL._UF1000,1000_QL80_.jpg")
+                        .tituLibr("The Catcher in the Rye").isbnLibr("9780316769488").fechPublLibr(LocalDate.of(1951, 7, 16)).editLibr("Little, Brown and Company").autoLibr("J.D. Salinger").copyBookEntities(null).build(),
+                BookEntity.builder().idLibr(0).urlImage("https://m.media-amazon.com/images/I/81iU2inbgLL._UF1000,1000_QL80_.jpg")
+                        .tituLibr("The Great Gatsby").isbnLibr("9780743273565").fechPublLibr(LocalDate.of(1925, 4, 10)).editLibr("Charles Scribner's Sons").autoLibr("F. Scott Fitzgerald").copyBookEntities(null).build(),
+                BookEntity.builder().idLibr(0).urlImage("https://m.media-amazon.com/images/I/81iU2inbgLL._UF1000,1000_QL80_.jpg")
+                        .tituLibr("Moby-Dick").isbnLibr("9781503280786").fechPublLibr(LocalDate.of(1851, 10, 18)).editLibr("Harper & Brothers").autoLibr("Herman Melville").copyBookEntities(null).build(),
+                BookEntity.builder().idLibr(0).urlImage("https://m.media-amazon.com/images/I/81iU2inbgLL._UF1000,1000_QL80_.jpg")
+                        .tituLibr("War and Peace").isbnLibr("9780199232765").fechPublLibr(LocalDate.of(1869, 1, 1)).editLibr("The Russian Messenger").autoLibr("Leo Tolstoy").copyBookEntities(null).build(),
+                BookEntity.builder().idLibr(0).urlImage("https://m.media-amazon.com/images/I/81iU2inbgLL._UF1000,1000_QL80_.jpg")
+                        .tituLibr("The Hobbit").isbnLibr("9780547928227").fechPublLibr(LocalDate.of(1937, 9, 21)).editLibr("George Allen & Unwin").autoLibr("J.R.R. Tolkien").copyBookEntities(null).build(),
+                BookEntity.builder().idLibr(0).urlImage("https://m.media-amazon.com/images/I/81iU2inbgLL._UF1000,1000_QL80_.jpg")
+                        .tituLibr("Fahrenheit 451").isbnLibr("9781451673319").fechPublLibr(LocalDate.of(1953, 10, 19)).editLibr("Ballantine Books").autoLibr("Ray Bradbury").copyBookEntities(null).build(),
+                BookEntity.builder().idLibr(0).urlImage("https://m.media-amazon.com/images/I/81iU2inbgLL._UF1000,1000_QL80_.jpg")
+                        .tituLibr("Brave New World").isbnLibr("9780060850524").fechPublLibr(LocalDate.of(1932, 1, 1)).editLibr("Chatto & Windus").autoLibr("Aldous Huxley").copyBookEntities(null).build()
         );
         bookEntities.stream().forEach(bookEntity -> bookService.createEntity(bookEntity));
     }

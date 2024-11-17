@@ -66,7 +66,7 @@ public class SecurityConfig {
                         .requestMatchers("/librarian/api/v1/request/create").hasRole(ERole.STUDENT.name())
                         .requestMatchers("/librarian/api/v1/request/list").hasAnyRole(ERole.STUDENT.name(), ERole.LIBRARIAN.name())
                         .requestMatchers("/librarian/api/v1/request/byId/**").hasAnyRole(ERole.STUDENT.name(), ERole.LIBRARIAN.name())
-                        .requestMatchers("/librarian/api/v1/request/update").hasAnyRole(ERole.STUDENT.name(), ERole.LIBRARIAN.name())
+                        .requestMatchers("/librarian/api/v1/request/git ").hasAnyRole(ERole.STUDENT.name(), ERole.LIBRARIAN.name())
 
                         //MICROSERVICE ISSUE
                         .requestMatchers("/issue/api/v1/book-issue/search/**").permitAll()

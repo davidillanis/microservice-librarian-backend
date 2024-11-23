@@ -41,8 +41,10 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void updateEntity(BookEntity obj) {
+        System.out.println(obj);
         BookEntity bookEntity = bookRepository.findById(obj.getIdLibr())
                 .orElseThrow(()->new EntityNotFoundException("this id book not exist"));
+        bookEntity.setIdLibr(obj.getIdLibr());
         bookEntity.setTituLibr(obj.getTituLibr());
         bookEntity.setDescLibr(obj.getDescLibr());
         bookEntity.setFechPublLibr(obj.getFechPublLibr());

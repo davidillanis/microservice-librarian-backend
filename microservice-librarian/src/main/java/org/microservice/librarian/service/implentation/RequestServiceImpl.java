@@ -45,6 +45,7 @@ public class RequestServiceImpl implements RequestService {
         requestEntity.setFechSoli(obj.getFechSoli());
         requestEntity.setStudentEntity(obj.getStudentEntity());
         requestEntity.setCopyBookEntity(obj.getCopyBookEntity());
+        requestRepository.save(requestEntity);
     }
 
     @Override

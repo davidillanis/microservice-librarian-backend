@@ -1,5 +1,7 @@
 package org.microservice.gateway.configuration.security;
 
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import org.microservice.gateway.client.UserRoleClient;
 import org.microservice.gateway.utils.dto.AuthCreateUserRequestDTO;
 import org.microservice.gateway.utils.dto.AuthLoginRequestDTO;
@@ -19,9 +21,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,6 +40,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         List<SimpleGrantedAuthority> authorityList= userEntity.getRoles().stream()
                 .map(role->new SimpleGrantedAuthority("ROLE_".concat(role.getRole().name()))).toList();
+
+        Optional.of(userEntity).filter(UserEntityDTO::getIsEnabled)
+                .orElseThrow(() -> new UsernameNotFoundException("this account is not enabled"));
 
         return new User(userEntity.getUsername(), userEntity.getPassword(), true, true, true, true, authorityList);
     }
@@ -61,7 +64,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         Authentication authentication = new UsernamePasswordAuthenticationToken(createRoleRequest, null, authorities);
         String accessToken = jwtUtils.createToken(authentication);
 
-        return new AuthResponseDTO(createRoleRequest.username(), "User created successfully", accessToken, true);
+        return new AuthResponseDTO(createRoleRequest.username(), "User created successfully", accessToken, createRoleRequest.roleList().stream().map(role->role.name()).toList(), true);
     }
 
     public AuthResponseDTO loginUser(AuthLoginRequestDTO authLoginRequest) {
@@ -73,7 +76,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String accessToken = jwtUtils.createToken(authentication);
-        return new AuthResponseDTO(username, "User loged succesfully", accessToken, true);
+
+        List<String>roles=Arrays.asList(jwtUtils.getSpecificClaim(jwtUtils.validateToken(accessToken), "authorities").asString()
+                .split(",")).stream().map(role->role.replace("ROLE_","")).toList();
+        return new AuthResponseDTO(username, "User logged successfully", accessToken, roles, true);
     }
 
     private Authentication authenticate(String username, String password) {

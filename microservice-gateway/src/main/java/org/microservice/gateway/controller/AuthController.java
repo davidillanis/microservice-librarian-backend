@@ -1,5 +1,6 @@
 package org.microservice.gateway.controller;
 
+import org.microservice.gateway.configuration.security.JwtUtils;
 import org.microservice.gateway.configuration.security.UserDetailsServiceImpl;
 import org.microservice.gateway.utils.dto.AuthCreateUserRequestDTO;
 import org.microservice.gateway.utils.dto.AuthLoginRequestDTO;
@@ -21,6 +22,8 @@ import java.util.List;
 public class AuthController {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
+    @Autowired
+    private JwtUtils jwtUtils;
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> loginUser(@RequestBody AuthLoginRequestDTO authLoginRequest) {
@@ -29,7 +32,7 @@ public class AuthController {
             return ResponseEntity.ok(response);
         }catch (Exception e){
             return new ResponseEntity<>(AuthResponseDTO.builder()
-                    .message("This username or password is incorrect")
+                    .message(e.getMessage())
                     .username(null).jwt(null).status(false)
                     .build(), HttpStatus.UNAUTHORIZED);
         }
@@ -44,6 +47,18 @@ public class AuthController {
             return new ResponseEntity<>(ResponseStatusDTO.builder()
                     .isSuccess(false).message(EMessage.ERROR_INTERNAL_SERVER).errors(List.of(e.getMessage()))
                     .build(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/valid-token")
+    public ResponseEntity<ResponseStatusDTO> validateToken(@RequestBody String token) {
+        try {
+            System.out.println(token);
+            jwtUtils.validateToken(token);
+            return new ResponseEntity<>( new ResponseStatusDTO(true, EMessage.SUCCESSFUL, List.of()),  HttpStatus.OK);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>( new ResponseStatusDTO(false, EMessage.ERROR_VALIDATION, List.of("this token invalid")),  HttpStatus.OK);
         }
     }
 }

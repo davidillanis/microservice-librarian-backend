@@ -27,7 +27,8 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.csrf(csrf->csrf.disable())
+        return http.cors(cors->cors.configure(http))
+                .csrf(csrf->csrf.disable())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize->authorize
@@ -39,8 +40,8 @@ public class SecurityConfig {
                         .requestMatchers("/users/api/v1/user-role/update").hasRole(ERole.LIBRARIAN.name())
                         .requestMatchers("/users/api/v1/user-role/byId/**").hasRole(ERole.LIBRARIAN.name())
                         .requestMatchers("/users/api/v1/user-role/byUsername/**").hasRole(ERole.LIBRARIAN.name())
-                        .requestMatchers("/users/api/v1/users/api/v1/user-role/status/**").hasRole(ERole.LIBRARIAN.name())
-                        .requestMatchers("/users/api/v1/users/api/v1/user-role/delete/byId/**").hasRole(ERole.LIBRARIAN.name())//ROLE ADMIN
+                        .requestMatchers("/users/api/v1/user-role/status/**").hasRole(ERole.LIBRARIAN.name())
+                        .requestMatchers("/users/api/v1/user-role/delete/byId/**").hasRole(ERole.LIBRARIAN.name())//ROLE ADMIN
 
                         //MICROSERVICE LIBRARY
                         .requestMatchers("/librarian/api/v1/book/list").permitAll()
@@ -66,7 +67,7 @@ public class SecurityConfig {
                         .requestMatchers("/librarian/api/v1/request/create").hasRole(ERole.STUDENT.name())
                         .requestMatchers("/librarian/api/v1/request/list").hasAnyRole(ERole.STUDENT.name(), ERole.LIBRARIAN.name())
                         .requestMatchers("/librarian/api/v1/request/byId/**").hasAnyRole(ERole.STUDENT.name(), ERole.LIBRARIAN.name())
-                        .requestMatchers("/librarian/api/v1/request/git ").hasAnyRole(ERole.STUDENT.name(), ERole.LIBRARIAN.name())
+                        .requestMatchers("/librarian/api/v1/request/update").hasAnyRole(ERole.STUDENT.name(), ERole.LIBRARIAN.name())
 
                         //MICROSERVICE ISSUE
                         .requestMatchers("/issue/api/v1/book-issue/search/**").permitAll()
@@ -79,6 +80,7 @@ public class SecurityConfig {
 
                         //GATEWAY
                         .requestMatchers("/auth/login").permitAll()
+                        .requestMatchers("/auth/valid-token").permitAll()
                         .requestMatchers("/auth/register").hasRole(ERole.LIBRARIAN.name())
 
                         .anyRequest().denyAll())

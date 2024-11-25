@@ -87,31 +87,31 @@ public class AddDataServiceImpl {
 
     private void addRequest(){
         List<RequestEntity> requestEntities = List.of(
-                RequestEntity.builder().idSoli(0).EstaSoli("Pendiente").fechSoli(LocalDate.now())
+                RequestEntity.builder().idSoli(0).estaSoli("Pendiente").fechSoli(LocalDate.now())
                         .copyBookEntity(copyBookService.getEntity("C001")).studentEntity(1).build(),
-                RequestEntity.builder().idSoli(0).EstaSoli("Pendiente").fechSoli(LocalDate.now())
+                RequestEntity.builder().idSoli(0).estaSoli("Pendiente").fechSoli(LocalDate.now())
                         .copyBookEntity(copyBookService.getEntity("C002")).studentEntity(1).build(),
-                RequestEntity.builder().idSoli(0).EstaSoli("Pendiente").fechSoli(LocalDate.now())
+                RequestEntity.builder().idSoli(0).estaSoli("Pendiente").fechSoli(LocalDate.now())
                         .copyBookEntity(copyBookService.getEntity("C003")).studentEntity(1).build(),
 
-                RequestEntity.builder().idSoli(0).EstaSoli("Pendiente").fechSoli(LocalDate.now())
+                RequestEntity.builder().idSoli(0).estaSoli("Pendiente").fechSoli(LocalDate.now())
                         .copyBookEntity(copyBookService.getEntity("C004")).studentEntity(2).build(),
-                RequestEntity.builder().idSoli(0).EstaSoli("Pendiente").fechSoli(LocalDate.now())
+                RequestEntity.builder().idSoli(0).estaSoli("Pendiente").fechSoli(LocalDate.now())
                         .copyBookEntity(copyBookService.getEntity("C001")).studentEntity(2).build(),
-                RequestEntity.builder().idSoli(0).EstaSoli("Pendiente").fechSoli(LocalDate.now())
+                RequestEntity.builder().idSoli(0).estaSoli("Pendiente").fechSoli(LocalDate.now())
                         .copyBookEntity(copyBookService.getEntity("C005")).studentEntity(2).build(),
 
-                RequestEntity.builder().idSoli(0).EstaSoli("Pendiente").fechSoli(LocalDate.now())
+                RequestEntity.builder().idSoli(0).estaSoli("Pendiente").fechSoli(LocalDate.now())
                         .copyBookEntity(copyBookService.getEntity("C001")).studentEntity(3).build(),
-                RequestEntity.builder().idSoli(0).EstaSoli("Pendiente").fechSoli(LocalDate.now())
+                RequestEntity.builder().idSoli(0).estaSoli("Pendiente").fechSoli(LocalDate.now())
                         .copyBookEntity(copyBookService.getEntity("C006")).studentEntity(3).build(),
 
-                RequestEntity.builder().idSoli(0).EstaSoli("Pendiente").fechSoli(LocalDate.now())
+                RequestEntity.builder().idSoli(0).estaSoli("Pendiente").fechSoli(LocalDate.now())
                         .copyBookEntity(copyBookService.getEntity("C001")).studentEntity(4).build(),
-                RequestEntity.builder().idSoli(0).EstaSoli("Pendiente").fechSoli(LocalDate.now())
+                RequestEntity.builder().idSoli(0).estaSoli("Pendiente").fechSoli(LocalDate.now())
                         .copyBookEntity(copyBookService.getEntity("C007")).studentEntity(4).build(),
 
-                RequestEntity.builder().idSoli(0).EstaSoli("Pendiente").fechSoli(LocalDate.now())
+                RequestEntity.builder().idSoli(0).estaSoli("Pendiente").fechSoli(LocalDate.now())
                         .copyBookEntity(copyBookService.getEntity("C001")).studentEntity(5).build()
         );
 

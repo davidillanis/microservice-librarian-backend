@@ -24,6 +24,16 @@ public class UserRoleController {
     @Autowired
     private UserRoleService userRoleService;
 
+    @GetMapping("/list")
+    public ResponseEntity<?> getList() {
+        try{
+            return ResponseEntity.ok(userRoleService.getListUserEntity());
+        }catch (Exception e){
+            return new ResponseEntity<>(ResponseStatusDTO.builder().isSuccess(false)
+                    .message(EMessage.RESOURCE_NOT_FOUND).errors(List.of(e.getMessage())).build(), HttpStatus.NOT_FOUND);
+        }
+    }
+
     @GetMapping("/byId/{id}")
     public ResponseEntity<?> getUserRoleById(@PathVariable Integer id) {
         try{
@@ -52,6 +62,19 @@ public class UserRoleController {
     public ResponseEntity<?> getStudent(@PathVariable Integer id) {
         try{
             StudentEntity student=userRoleService.getStudentById(id);
+            student.getUserEntity().setPassword(null);
+            return ResponseEntity.ok(student);
+        }catch (Exception e){
+            return new ResponseEntity<>(ResponseStatusDTO.builder()
+                    .isSuccess(false).message(EMessage.RESOURCE_NOT_FOUND).errors(List.of(e.getMessage()))
+                    .build(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/student/byUsername/{username}")
+    public ResponseEntity<?> getStudentByUsername(@PathVariable String username) {
+        try{
+            StudentEntity student=userRoleService.getStudentByUsername(username);
             student.getUserEntity().setPassword(null);
             return ResponseEntity.ok(student);
         }catch (Exception e){

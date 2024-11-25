@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -34,6 +35,20 @@ public class UserRoleServiceImpl implements UserRoleService {
     private PasswordEncoder passwordEncoder;
 
     @Override
+    public List<UserEntity> getListUserEntity() {
+        return userRepository.findAll().stream().map(userEntity -> {
+            userEntity.setPassword(null);
+            if(userEntity.getStudentEntity()!=null) {
+                userEntity.getStudentEntity().setUserEntity(null);
+            }
+            if(userEntity.getLibrarianEntity()!=null){
+                userEntity.getLibrarianEntity().setUserEntity(null);
+            }
+            return userEntity;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
     public UserEntity getUserEntityById(Integer id) {
 
         UserEntity userEntity=userRepository.findById(id).orElseThrow(()->new EntityNotFoundException("this user not exists"));
@@ -49,6 +64,14 @@ public class UserRoleServiceImpl implements UserRoleService {
         Optional.ofNullable(userEntity.getStudentEntity()).ifPresent(student -> student.setUserEntity(null));
         Optional.ofNullable(userEntity.getLibrarianEntity()).ifPresent(librarian -> librarian.setUserEntity(null));
         return userEntity;
+    }
+
+    @Override
+    public StudentEntity getStudentByUsername(String username) {
+        StudentEntity studentEntity=studentRepository.findStudentEntityByUserEntityUsername(username)
+                .orElseThrow(()->new EntityNotFoundException("this user not exists"));
+        studentEntity.getUserEntity().setStudentEntity(null);
+        return studentEntity;
     }
 
     @Override

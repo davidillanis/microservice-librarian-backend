@@ -53,6 +53,20 @@ public class RequestController {
         return new ResponseEntity<>(requestEntities, HttpStatus.OK);
     }
 
+    @GetMapping("/list/student/byUsername/{username}")
+    public ResponseEntity<List<RequestEntity>> getListEntityByUsername(@PathVariable String username) {
+        List<RequestEntity> requestEntities=requestService.getListEntityByUsername(username).stream().map(requestEntity -> {
+            requestEntity.getCopyBookEntity().setBookEntity(null);
+            requestEntity.getCopyBookEntity().setRequestEntities(null);
+            requestEntity.getCopyBookEntity().setLoanEntities(null);
+            //requestEntity.getStudentEntity().setRequestEntities(null);
+            //requestEntity.getStudentEntity().setUserEntity(null);
+            //requestEntity.getStudentEntity().setLoanEntities(null);
+            return requestEntity;
+        }).collect(Collectors.toList());
+        return new ResponseEntity<>(requestEntities, HttpStatus.OK);
+    }
+
     @GetMapping("/byId/{id}")
     public ResponseEntity<Object> getBookById(@PathVariable Integer id) {
         try {

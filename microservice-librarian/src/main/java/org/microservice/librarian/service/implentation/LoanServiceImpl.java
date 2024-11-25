@@ -5,6 +5,7 @@ import org.microservice.librarian.client.UserRoleClient;
 import org.microservice.librarian.model.entity.LoanEntity;
 import org.microservice.librarian.model.repository.LoanRepository;
 import org.microservice.librarian.service.LoanService;
+import org.microservice.librarian.util.dto.StudentEntityDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +37,22 @@ public class LoanServiceImpl implements LoanService {
             loan.getCopyBookEntity().setRequestEntities(null);
             return loan;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<LoanEntity> getListEntityByUsername(String username) {
+        StudentEntityDTO student=userRoleClient.getStudentByUsername(username)
+                .orElseThrow(()->new EntityNotFoundException("This student by id "+username+" does not exist"));
+
+        System.out.println(student);
+
+        return loanRepository.findAll().stream().map(loan -> {
+            loan.getCopyBookEntity().setBookEntity(null);
+            loan.getCopyBookEntity().setLoanEntities(null);
+            loan.getCopyBookEntity().setRequestEntities(null);
+            return loan;
+        }).filter(loanEntity -> loanEntity.getStudentEntity()==student.getIdAlumn()).toList();
+
     }
 
     @Override

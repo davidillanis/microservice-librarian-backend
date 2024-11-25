@@ -6,9 +6,13 @@ import org.microservice.users.model.entity.UserEntity;
 import org.microservice.users.utils.dto.AuthCreateUserRequestDTO;
 import org.microservice.users.utils.dto.AuthUpdateUserRequestDTO;
 
+import java.util.List;
+
 public interface UserRoleService {
+    List<UserEntity> getListUserEntity();
     UserEntity getUserEntityById(Integer id);
     UserEntity getUserEntityByUsername(String username);
+    StudentEntity getStudentByUsername(String username);
     StudentEntity getStudentById(Integer id);
     LibrarianEntity getLibrarianById(Integer id);
     void createEntity(AuthCreateUserRequestDTO obj) throws Exception;

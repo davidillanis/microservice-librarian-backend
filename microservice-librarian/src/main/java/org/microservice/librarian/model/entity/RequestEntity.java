@@ -23,7 +23,7 @@ public class RequestEntity {
 
     @NotNull(message = "not null")
     @Column(nullable = false, length = 25)
-    private String EstaSoli;
+    private String estaSoli;
 
     @NotNull(message = "not null")
     @Column(nullable = false)

@@ -36,10 +36,11 @@ public class SecurityConfig {
                         //MICROSERVICE USERS
                         .requestMatchers("/users/api/v1/user-role/librarian/byId/**").hasRole(ERole.LIBRARIAN.name())
                         .requestMatchers("/users/api/v1/user-role/student/byId/**").hasAnyRole(ERole.LIBRARIAN.name(), ERole.STUDENT.name())
+                        .requestMatchers("/users/api/v1/user-role/list").hasRole(ERole.LIBRARIAN.name())
                         .requestMatchers("/users/api/v1/user-role/create").hasRole(ERole.LIBRARIAN.name())
                         .requestMatchers("/users/api/v1/user-role/update").hasRole(ERole.LIBRARIAN.name())
                         .requestMatchers("/users/api/v1/user-role/byId/**").hasRole(ERole.LIBRARIAN.name())
-                        .requestMatchers("/users/api/v1/user-role/byUsername/**").hasRole(ERole.LIBRARIAN.name())
+                        .requestMatchers("/users/api/v1/user-role/byUsername/**").hasAnyRole(ERole.LIBRARIAN.name(), ERole.STUDENT.name())
                         .requestMatchers("/users/api/v1/user-role/status/**").hasRole(ERole.LIBRARIAN.name())
                         .requestMatchers("/users/api/v1/user-role/delete/byId/**").hasRole(ERole.LIBRARIAN.name())//ROLE ADMIN
 
@@ -62,10 +63,12 @@ public class SecurityConfig {
                         .requestMatchers("/librarian/api/v1/loan/byId/**").hasAnyRole(ERole.LIBRARIAN.name(), ERole.STUDENT.name())
                         .requestMatchers("/librarian/api/v1/loan/create").hasRole(ERole.LIBRARIAN.name())
                         .requestMatchers("/librarian/api/v1/loan/list").hasAnyRole(ERole.LIBRARIAN.name(), ERole.STUDENT.name())
+                        .requestMatchers("/librarian/api/v1/loan/list/student/byUsername/**").hasAnyRole(ERole.LIBRARIAN.name(), ERole.STUDENT.name())
                         .requestMatchers("/librarian/api/v1/loan/update").hasRole(ERole.LIBRARIAN.name())
 
                         .requestMatchers("/librarian/api/v1/request/create").hasRole(ERole.STUDENT.name())
                         .requestMatchers("/librarian/api/v1/request/list").hasAnyRole(ERole.STUDENT.name(), ERole.LIBRARIAN.name())
+                        .requestMatchers("/librarian/api/v1/request/list/student/byUsername/**").hasAnyRole(ERole.STUDENT.name(), ERole.LIBRARIAN.name())
                         .requestMatchers("/librarian/api/v1/request/byId/**").hasAnyRole(ERole.STUDENT.name(), ERole.LIBRARIAN.name())
                         .requestMatchers("/librarian/api/v1/request/update").hasAnyRole(ERole.STUDENT.name(), ERole.LIBRARIAN.name())
 

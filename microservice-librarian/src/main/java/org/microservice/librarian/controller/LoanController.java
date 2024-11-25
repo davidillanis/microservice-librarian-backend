@@ -42,6 +42,11 @@ public class LoanController {
         return new ResponseEntity<>(loanService.getListEntity(), HttpStatus.OK);
     }
 
+    @GetMapping("/list/student/byUsername/{username}")
+    public ResponseEntity<List<LoanEntity>> getListEntityByUsername(@PathVariable String username) {
+        return new ResponseEntity<>(loanService.getListEntityByUsername(username), HttpStatus.OK);
+    }
+
     @GetMapping("/byId/{id}")
     public ResponseEntity<?> getLoanById(@PathVariable Integer id) {
         try {

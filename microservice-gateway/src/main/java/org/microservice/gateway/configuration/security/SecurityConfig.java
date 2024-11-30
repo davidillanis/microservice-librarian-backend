@@ -39,6 +39,7 @@ public class SecurityConfig {
                         .requestMatchers("/users/api/v1/user-role/list").hasRole(ERole.LIBRARIAN.name())
                         .requestMatchers("/users/api/v1/user-role/create").hasRole(ERole.LIBRARIAN.name())
                         .requestMatchers("/users/api/v1/user-role/update").hasRole(ERole.LIBRARIAN.name())
+                        .requestMatchers("/users/api/v1/user-role/update-password/**").hasRole(ERole.LIBRARIAN.name())
                         .requestMatchers("/users/api/v1/user-role/byId/**").hasRole(ERole.LIBRARIAN.name())
                         .requestMatchers("/users/api/v1/user-role/byUsername/**").hasAnyRole(ERole.LIBRARIAN.name(), ERole.STUDENT.name())
                         .requestMatchers("/users/api/v1/user-role/status/**").hasRole(ERole.LIBRARIAN.name())

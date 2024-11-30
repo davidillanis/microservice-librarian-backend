@@ -7,6 +7,7 @@ import org.microservice.users.model.entity.UserEntity;
 import org.microservice.users.service.UserRoleService;
 import org.microservice.users.utils.dto.AuthCreateUserRequestDTO;
 import org.microservice.users.utils.dto.AuthUpdateUserRequestDTO;
+import org.microservice.users.utils.dto.ChangePasswordDTO;
 import org.microservice.users.utils.dto.ResponseStatusDTO;
 import org.microservice.users.utils.other.EMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/user-role")
@@ -50,7 +50,6 @@ public class UserRoleController {
     public ResponseEntity<?> getUserRoleByUsername(@PathVariable String username) {
         try {
             UserEntity userEntity=userRoleService.getUserEntityByUsername(username);
-            //userEntity.setPassword(null);
             return ResponseEntity.ok(userEntity);
         }catch (Exception e){
             return new ResponseEntity<>(ResponseStatusDTO.builder().isSuccess(false)
@@ -121,6 +120,23 @@ public class UserRoleController {
         }
         try{
             userRoleService.updateEntity(authUser);
+            return new ResponseEntity<>(ResponseStatusDTO.builder()
+                    .isSuccess(true).message(EMessage.SUCCESSFUL).build(), HttpStatus.CREATED);
+        }catch (Exception e){
+            return new ResponseEntity<>(ResponseStatusDTO.builder()
+                    .isSuccess(false).message(EMessage.RESOURCE_NOT_FOUND).errors(List.of(e.getMessage()))
+                    .build(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping("/update-password/{username}")
+    public ResponseEntity<ResponseStatusDTO> changePassword(@PathVariable String username,
+                                                 @Valid @RequestBody ChangePasswordDTO request, BindingResult bindingResult) {
+        if (bindingResult.hasErrors() ) {
+            return new ResponseEntity<>(ResponseStatusDTO.responseStatusValid(bindingResult, EMessage.ERROR_VALIDATION), HttpStatus.BAD_REQUEST);
+        }
+        try{
+            userRoleService.updatePassword(username, request.getOldPassword(), request.getNewPassword());
             return new ResponseEntity<>(ResponseStatusDTO.builder()
                     .isSuccess(true).message(EMessage.SUCCESSFUL).build(), HttpStatus.CREATED);
         }catch (Exception e){

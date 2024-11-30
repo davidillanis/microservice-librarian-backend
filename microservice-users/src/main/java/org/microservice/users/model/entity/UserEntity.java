@@ -1,6 +1,8 @@
 package org.microservice.users.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.HashSet;
@@ -28,12 +30,16 @@ public class UserEntity {
     private Boolean isEnabled;
 
     @Column(length = 15)
+    @Size(min = 8, max = 15, message = "El telefono debe tener de 8 a 15 caracteres")
     private String teleUsua;
 
     @Column(columnDefinition = "CHAR(10)", nullable = false, unique = true)
+    @NotNull(message = "El DNI no puede ser nulo")
+    @Size(min = 8, max = 10, message = "El DNI debe tener de 8 a 10 caracteres")
     private String DNIUsua;
 
     @Column(nullable = false, length = 45)
+    @NotNull(message = "La contraseña no puede ser nula")
     private String nombUsua;
 
     @Column(columnDefinition = "CHAR(25)", nullable = false)

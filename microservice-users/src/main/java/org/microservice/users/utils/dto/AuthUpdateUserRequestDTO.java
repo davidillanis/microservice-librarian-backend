@@ -1,19 +1,12 @@
 package org.microservice.users.utils.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import org.microservice.users.utils.other.ERole;
-
-import java.util.List;
 
 public record AuthUpdateUserRequestDTO(
         @Size(min = 4, max = 25, message = "this size min 4, max 25")
         @NotBlank(message = "This Username is not empty")
         String username,
-
-        @NotBlank(message = "This Password is not empty")
-        String password,
 
         @NotBlank(message = "this Name is empty")
         String usuaNomb,

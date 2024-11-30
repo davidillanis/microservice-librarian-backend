@@ -12,6 +12,7 @@ import org.microservice.users.model.repository.UserRepository;
 import org.microservice.users.service.UserRoleService;
 import org.microservice.users.utils.dto.AuthCreateUserRequestDTO;
 import org.microservice.users.utils.dto.AuthUpdateUserRequestDTO;
+import org.microservice.users.utils.exception.DuplicateDataException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -52,6 +53,7 @@ public class UserRoleServiceImpl implements UserRoleService {
     public UserEntity getUserEntityById(Integer id) {
 
         UserEntity userEntity=userRepository.findById(id).orElseThrow(()->new EntityNotFoundException("this user not exists"));
+        userEntity.setPassword(null);
         Optional.ofNullable(userEntity.getStudentEntity()).ifPresent(student -> student.setUserEntity(null));
         Optional.ofNullable(userEntity.getLibrarianEntity()).ifPresent(librarian -> librarian.setUserEntity(null));
 
@@ -71,6 +73,7 @@ public class UserRoleServiceImpl implements UserRoleService {
         StudentEntity studentEntity=studentRepository.findStudentEntityByUserEntityUsername(username)
                 .orElseThrow(()->new EntityNotFoundException("this user not exists"));
         studentEntity.getUserEntity().setStudentEntity(null);
+        studentEntity.getUserEntity().setPassword(null);
         return studentEntity;
     }
 
@@ -79,6 +82,7 @@ public class UserRoleServiceImpl implements UserRoleService {
         StudentEntity student = studentRepository.findById(id).orElse(null);
         if (student != null) {
             student.getUserEntity().setStudentEntity(null);
+            student.getUserEntity().setPassword(null);
             return student;
         }
         return null;
@@ -89,6 +93,7 @@ public class UserRoleServiceImpl implements UserRoleService {
         LibrarianEntity librarian = librarianRepository.findById(id).orElse(null);
         if (librarian != null) {
             librarian.getUserEntity().setLibrarianEntity(null);
+            librarian.getUserEntity().setPassword(null);
             return librarian;
         }
         return null;
@@ -96,7 +101,13 @@ public class UserRoleServiceImpl implements UserRoleService {
 
     @Override
     public void createEntity(AuthCreateUserRequestDTO obj) throws Exception {
-        //AuthResponseDTO authResponseDTO=userDetailService.createUser(obj);
+        if(userRepository.existsByDNIUsua(obj.usuaDNI())){
+            throw new DuplicateDataException(obj.usuaDNI());
+        }
+        if(userRepository.existsByUsername(obj.username())){
+            throw new DuplicateDataException(obj.username());
+        }
+
         userRepository.save(UserEntity.builder()
                 .idUsua(0)
                 .username(obj.username())
@@ -125,8 +136,11 @@ public class UserRoleServiceImpl implements UserRoleService {
     public Boolean updateEntity(AuthUpdateUserRequestDTO obj) {
         UserEntity userEntity=userRepository.findUserEntityByUsername(obj.username())
                 .orElseThrow(()->new EntityNotFoundException("this "+obj.username()+" user not exists"));
+        if(!obj.usuaDNI().equals(userEntity.getDNIUsua()) && userRepository.existsByDNIUsua(obj.usuaDNI())){
+            throw new DuplicateDataException(obj.usuaDNI());
+        }
+
         if(userEntity!=null){
-            userEntity.setPassword(passwordEncoder.encode(obj.password()));
             userEntity.setNombUsua(obj.usuaNomb());
             userEntity.setApelMaternoUsua(obj.usuaApelMaterno());
             userEntity.setApelPaternoUsua(obj.usuaApelPaterno());
@@ -148,6 +162,21 @@ public class UserRoleServiceImpl implements UserRoleService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void updatePassword(String username, String oldPassword, String newPassword) {
+        UserEntity user = userRepository.findUserEntityByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con el username: " + username));
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            throw new IllegalArgumentException("La contraseña actual es incorrecta.");
+        }
+        //user.setPassword(passwordEncoder.encode(newPassword));
+        //userRepository.save(user);
+        int rowsUpdated = userRepository.updatePasswordByUsername(username, passwordEncoder.encode(newPassword));
+        if (rowsUpdated == 0) {
+            throw new IllegalStateException("No se pudo actualizar la contraseña.");
+        }
     }
 
     @Override

@@ -19,4 +19,5 @@ public interface BookService {
     void createBookIssue(BookIssueRequest obj);
     List<BookEntity> getListPopularCopyBook();
     CopyBookEntity searchCopyBookAvailable(String isbn);
+    List<CopyBookEntity> listCopyBookAvailable(String isbn);
 }

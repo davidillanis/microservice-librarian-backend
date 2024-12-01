@@ -6,11 +6,11 @@ import lombok.Data;
 
 @Data
 public class ChangePasswordDTO {
-    @NotBlank(message = "This old password is not empty")
-    @NotNull(message = "this old password is not null")
+    @NotBlank(message = "Esta contraseña antigua, está vacía")
+    @NotNull(message = "Esta contraseña antigua no es nula")
     private String oldPassword;
 
-    @NotBlank(message = "This old password is not empty")
-    @NotNull(message = "this old password is not null")
+    @NotBlank(message = "Esta contraseña antigua, está vacía")
+    @NotNull(message = "Esta contraseña antigua no es nula")
     private String newPassword;
 }

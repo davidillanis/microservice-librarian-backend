@@ -110,6 +110,22 @@ public class BookController {
         }
     }
 
+    @GetMapping("/list-copy-available/{isbn}")
+    public ResponseEntity<?> listCopyBookAvailable(@PathVariable String isbn) {
+        try {
+            List<CopyBookEntity> copyBookEntity = bookService.listCopyBookAvailable(isbn);
+            if (copyBookEntity == null) {
+                return new ResponseEntity<>(ResponseStatusDTO.builder().isSuccess(false).message(EMessage.RESOURCE_NOT_FOUND)
+                        .errors(List.of("No available copies found")).build(), HttpStatus.NOT_FOUND);
+            }
+
+            return new ResponseEntity<>(copyBookEntity, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(ResponseStatusDTO.builder().isSuccess(false).message(EMessage.INTERNAL_SERVER_ERROR)
+                    .errors(List.of(e.getMessage())).build(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping("/get-list-popular")
     public ResponseEntity<List<BookEntity>> getPopularBooks() {
         try {

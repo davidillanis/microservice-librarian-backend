@@ -13,7 +13,10 @@ import org.springframework.stereotype.Service;
 import org.microservice.librarian.util.dto.BookIssueDTO;
 import org.microservice.librarian.util.http.request.BookIssueRequest;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -102,5 +105,31 @@ public class BookServiceImpl implements BookService {
                                 .isPresent() && copyBook.isHabiEjem() && copyBook.isHabiEjem())
                         .findFirst())
                 .orElse(null);
+    }
+
+    @Override
+    public List<CopyBookEntity> listCopyBookAvailable(String isbn) {
+        List<CopyBookEntity> copyBookEntityList = bookRepository.findBookEntityByIsbnLibr(isbn)
+                .map(BookEntity::getCopyBookEntities)
+                .map(copyBooks -> copyBooks.stream()
+                        .filter(copyBook ->
+                                loanRepository.findTopByCopyBookEntity_CodiEjemOrderByIdPrestDesc(copyBook.getCodiEjem())
+                                        .map(LoanEntity::getEstaPres)
+                                        .filter(estaPres -> estaPres == 1)
+                                        .isPresent()
+                                        && copyBook.isHabiEjem()
+                        )
+                        .collect(Collectors.toList())
+                )
+                .orElse(Collections.emptyList());
+
+        return copyBookEntityList.stream().peek(copyBook->{
+                copyBook.getBookEntity().setCopyBookEntities(null);
+                Optional.ofNullable(copyBook.getRequestEntities())
+                    .ifPresent(requests -> requests.forEach(copy -> copy.setCopyBookEntity(null)));
+                Optional.ofNullable(copyBook.getLoanEntities())
+                    .ifPresent(loans -> loans.forEach(copy -> copy.setCopyBookEntity(null)));
+            }
+        ).collect(Collectors.toList());
     }
 }

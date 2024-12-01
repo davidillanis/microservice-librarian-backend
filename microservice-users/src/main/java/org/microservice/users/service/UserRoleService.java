@@ -19,5 +19,6 @@ public interface UserRoleService {
     Boolean updateEntity(AuthUpdateUserRequestDTO obj);
     Boolean updateEnabledAccount(Integer id, Boolean enabled);
     void updatePassword(String username, String oldPassword, String newPassword);
+    void updatePassword(String username, String Password);
     Boolean deleteEntity(Integer id);
 }

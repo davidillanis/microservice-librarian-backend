@@ -1,6 +1,7 @@
 package org.microservice.users.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import org.microservice.users.model.entity.LibrarianEntity;
 import org.microservice.users.model.entity.StudentEntity;
 import org.microservice.users.model.entity.UserEntity;
@@ -129,9 +130,26 @@ public class UserRoleController {
         }
     }
 
-    @PutMapping("/update-password/{username}")
-    public ResponseEntity<ResponseStatusDTO> changePassword(@PathVariable String username,
-                                                 @Valid @RequestBody ChangePasswordDTO request, BindingResult bindingResult) {
+    @PutMapping("/update-password-student/{username}")
+    public ResponseEntity<ResponseStatusDTO> changePasswordByLibrary(@PathVariable String username,
+                                                                     @NotBlank @RequestBody String password, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>(ResponseStatusDTO.responseStatusValid(bindingResult, EMessage.ERROR_VALIDATION), HttpStatus.BAD_REQUEST);
+        }
+        try{
+            userRoleService.updatePassword(username, password);
+            return new ResponseEntity<>(ResponseStatusDTO.builder()
+                    .isSuccess(true).message(EMessage.SUCCESSFUL).build(), HttpStatus.CREATED);
+        }catch (Exception e){
+            return new ResponseEntity<>(ResponseStatusDTO.builder()
+                    .isSuccess(false).message(EMessage.RESOURCE_NOT_FOUND).errors(List.of(e.getMessage()))
+                    .build(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping("/update-password-library/{username}")
+    public ResponseEntity<ResponseStatusDTO> changePasswordByStudent(@PathVariable String username,
+                                                            @Valid @RequestBody ChangePasswordDTO request, BindingResult bindingResult) {
         if (bindingResult.hasErrors() ) {
             return new ResponseEntity<>(ResponseStatusDTO.responseStatusValid(bindingResult, EMessage.ERROR_VALIDATION), HttpStatus.BAD_REQUEST);
         }

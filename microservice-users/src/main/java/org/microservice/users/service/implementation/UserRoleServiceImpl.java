@@ -180,6 +180,14 @@ public class UserRoleServiceImpl implements UserRoleService {
     }
 
     @Override
+    public void updatePassword(String username, String Password) {
+        UserEntity user = userRepository.findUserEntityByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con el username: " + username));
+        user.setPassword(passwordEncoder.encode(Password));
+        userRepository.save(user);
+    }
+
+    @Override
     public Boolean deleteEntity(Integer id) {
         UserEntity user =userRepository.findById(id).orElseThrow(()->new EntityNotFoundException("this user not exists"));
         if(user !=null){

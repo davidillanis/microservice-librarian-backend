@@ -39,7 +39,8 @@ public class SecurityConfig {
                         .requestMatchers("/users/api/v1/user-role/list").hasRole(ERole.LIBRARIAN.name())
                         .requestMatchers("/users/api/v1/user-role/create").hasRole(ERole.LIBRARIAN.name())
                         .requestMatchers("/users/api/v1/user-role/update").hasRole(ERole.LIBRARIAN.name())
-                        .requestMatchers("/users/api/v1/user-role/update-password/**").hasRole(ERole.LIBRARIAN.name())
+                        .requestMatchers("/users/api/v1/user-role/update-password-library/**").hasRole(ERole.LIBRARIAN.name())
+                        .requestMatchers("/users/api/v1/user-role/update-password-student/**").hasRole(ERole.STUDENT.name())
                         .requestMatchers("/users/api/v1/user-role/byId/**").hasRole(ERole.LIBRARIAN.name())
                         .requestMatchers("/users/api/v1/user-role/byUsername/**").hasAnyRole(ERole.LIBRARIAN.name(), ERole.STUDENT.name())
                         .requestMatchers("/users/api/v1/user-role/status/**").hasRole(ERole.LIBRARIAN.name())
@@ -51,6 +52,7 @@ public class SecurityConfig {
                         .requestMatchers("/librarian/api/v1/book/create/book-issue").hasRole(ERole.LIBRARIAN.name())
                         .requestMatchers("/librarian/api/v1/book/searchByISBN/**").permitAll()
                         .requestMatchers("/librarian/api/v1/book/search-copy-available/**").permitAll()
+                        .requestMatchers("/librarian/api/v1/book/list-copy-available/**").permitAll()
                         .requestMatchers("/librarian/api/v1/book/get-list-popular").permitAll()
                         .requestMatchers("/librarian/api/v1/book/update").hasRole(ERole.LIBRARIAN.name())
 

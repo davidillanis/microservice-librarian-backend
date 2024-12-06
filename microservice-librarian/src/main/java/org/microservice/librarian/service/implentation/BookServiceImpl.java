@@ -91,12 +91,13 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookEntity> getListPopularCopyBook() {
-        return bookRepository.getListPopularCopyBook();
+        return bookRepository.getListPopularCopyBook().isEmpty()?
+                bookRepository.findAll():bookRepository.getListPopularCopyBook();
     }
 
     @Override
     public CopyBookEntity searchCopyBookAvailable(String isbn) {
-        return bookRepository.findBookEntityByIsbnLibr(isbn)
+        /*return bookRepository.findBookEntityByIsbnLibr(isbn)
                 .map(BookEntity::getCopyBookEntities)
                 .flatMap(copyBooks -> copyBooks.stream()
                         .filter(copyBook -> loanRepository.findTopByCopyBookEntity_CodiEjemOrderByIdPrestDesc(copyBook.getCodiEjem())
@@ -104,6 +105,19 @@ public class BookServiceImpl implements BookService {
                                 .filter(estaPres -> estaPres == 1)
                                 .isPresent() && copyBook.isHabiEjem() && copyBook.isHabiEjem())
                         .findFirst())
+                .orElse(null);*/
+        return bookRepository.findBookEntityByIsbnLibr(isbn)
+                .map(BookEntity::getCopyBookEntities)
+                .flatMap(copyBooks -> copyBooks.stream()
+                        .filter(copyBook ->{
+                            if(loanRepository.findTopByCopyBookEntity_CodiEjemOrderByIdPrestDesc(copyBook.getCodiEjem()).orElse(null)!=null) {
+                                return loanRepository.findTopByCopyBookEntity_CodiEjemOrderByIdPrestDesc(copyBook.getCodiEjem())
+                                        .map(LoanEntity::getEstaPres)
+                                        .filter(estaPres -> estaPres == 1)
+                                        .isPresent() && copyBook.isHabiEjem() && copyBook.isHabiEjem();
+                            }
+                            return true;
+                        }).findFirst())
                 .orElse(null);
     }
 

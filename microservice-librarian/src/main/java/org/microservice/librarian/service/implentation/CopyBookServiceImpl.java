@@ -22,7 +22,7 @@ public class CopyBookServiceImpl implements CopyBookService {
             throw new EntityNotFoundException("This Entity is null");
         }
         if(copyBookRepository.existsById(obj.getCodiEjem())){
-            throw new EntityNotFoundException("This ID "+obj.getCodiEjem()+" already exists");
+            throw new EntityNotFoundException("El Id "+obj.getCodiEjem()+" ya esta registrado");
         }
         copyBookRepository.save(obj);
     }

@@ -22,6 +22,6 @@ public class MicroserviceLibrarianApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		addDataService.addDataBase();
+		//addDataService.addDataBase();
 	}
 }

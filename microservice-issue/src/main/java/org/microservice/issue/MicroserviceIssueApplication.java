@@ -19,6 +19,6 @@ public class MicroserviceIssueApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args)  {
-		addDataService.addData();
+		//addDataService.addData();
 	}
 }

@@ -27,17 +27,10 @@ public class AddDataServiceImpl {
     private LoanService loanService;
 
     public void addDataBase(){
-        //addBook();
-        //addCopyBook();
-        //addRequest();
-        //addLoan();
-        bookService.createEntity(BookEntity.builder().idLibr(0)
-                .urlImage("https://m.media-amazon.com/images/I/81iU2inbgLL._UF1000,1000_QL80_.jpg")
-                .tituLibr("To Kill a Mockingbird").isbnLibr("9780061120084").fechPublLibr(LocalDate.now())
-                .editLibr("J.B. Lippincott & Co.").autoLibr("Harper Lee").copyBookEntities(null).build());
-
-        copyBookService.createEntity(CopyBookEntity.builder().codiEjem("C001").locaEjem("LOCATION01-A")
-                .estaEjem("Bueno").habiEjem(true).bookEntity(bookService.findBookEntityByIsbnLibr("9780061120084")).build());
+        addBook();
+        addCopyBook();
+        addRequest();
+        addLoan();
     }
 
     private void addBook(){

@@ -97,15 +97,6 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public CopyBookEntity searchCopyBookAvailable(String isbn) {
-        /*return bookRepository.findBookEntityByIsbnLibr(isbn)
-                .map(BookEntity::getCopyBookEntities)
-                .flatMap(copyBooks -> copyBooks.stream()
-                        .filter(copyBook -> loanRepository.findTopByCopyBookEntity_CodiEjemOrderByIdPrestDesc(copyBook.getCodiEjem())
-                                .map(LoanEntity::getEstaPres)
-                                .filter(estaPres -> estaPres == 1)
-                                .isPresent() && copyBook.isHabiEjem() && copyBook.isHabiEjem())
-                        .findFirst())
-                .orElse(null);*/
         return bookRepository.findBookEntityByIsbnLibr(isbn)
                 .map(BookEntity::getCopyBookEntities)
                 .flatMap(copyBooks -> copyBooks.stream()
@@ -126,13 +117,16 @@ public class BookServiceImpl implements BookService {
         List<CopyBookEntity> copyBookEntityList = bookRepository.findBookEntityByIsbnLibr(isbn)
                 .map(BookEntity::getCopyBookEntities)
                 .map(copyBooks -> copyBooks.stream()
-                        .filter(copyBook ->
-                                loanRepository.findTopByCopyBookEntity_CodiEjemOrderByIdPrestDesc(copyBook.getCodiEjem())
+                        .filter(copyBook ->{
+                            if(loanRepository.findTopByCopyBookEntity_CodiEjemOrderByIdPrestDesc(copyBook.getCodiEjem()).orElse(null)!=null) {
+                                return loanRepository.findTopByCopyBookEntity_CodiEjemOrderByIdPrestDesc(copyBook.getCodiEjem())
                                         .map(LoanEntity::getEstaPres)
                                         .filter(estaPres -> estaPres == 1)
-                                        .isPresent()
-                                        && copyBook.isHabiEjem()
-                        )
+                                        .isPresent() && copyBook.isHabiEjem();
+                            }
+                            return true;
+
+                        })
                         .collect(Collectors.toList())
                 )
                 .orElse(Collections.emptyList());

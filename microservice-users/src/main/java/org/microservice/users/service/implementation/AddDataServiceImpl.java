@@ -19,11 +19,11 @@ public class AddDataServiceImpl {
 
     public void addUserRole(){
         List<AuthCreateUserRequestDTO> listUsers=List.of(
-                new AuthCreateUserRequestDTO("david","1234","David Abel","Illanis","Quispe","12345678", "93298462", List.of(ERole.STUDENT)),
-                new AuthCreateUserRequestDTO("romel","1234","Romel","Serna","Allcca","81239812", "93212233", List.of(ERole.STUDENT)),
-                new AuthCreateUserRequestDTO("eduard","1234","Eduard","Garcia","Gansebit","38725192", "932132133", List.of(ERole.STUDENT)),
-                new AuthCreateUserRequestDTO("bondy","1234","Bondy","Perez","Obrador","38725092", "932132133", List.of(ERole.STUDENT)),
-                new AuthCreateUserRequestDTO("juan","1234","Juan","-----","-----","38727092", "932132131", List.of(ERole.STUDENT)),
+                //new AuthCreateUserRequestDTO("david","1234","David Abel","Illanis","Quispe","12345678", "93298462", List.of(ERole.STUDENT)),
+                //new AuthCreateUserRequestDTO("romel","1234","Romel","Serna","Allcca","81239812", "93212233", List.of(ERole.STUDENT)),
+                //new AuthCreateUserRequestDTO("eduard","1234","Eduard","Garcia","Gansebit","38725192", "932132133", List.of(ERole.STUDENT)),
+                //new AuthCreateUserRequestDTO("bondy","1234","Bondy","Perez","Obrador","38725092", "932132133", List.of(ERole.STUDENT)),
+                //new AuthCreateUserRequestDTO("juan","1234","Juan","-----","-----","38727092", "932132131", List.of(ERole.STUDENT)),
                 new AuthCreateUserRequestDTO("admin","1234","Admin","Lopez","Bolivar","38725193", "932132323", List.of(ERole.LIBRARIAN))
         );
         listUsers.forEach(user-> {
